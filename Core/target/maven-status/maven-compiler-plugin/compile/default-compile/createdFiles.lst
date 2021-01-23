@@ -1,0 +1,11 @@
+io\github\espryth\easyjoin\file\Files.class
+io\github\espryth\easyjoin\listeners\AuthMeListener.class
+io\github\espryth\easyjoin\commands\MainCommand.class
+io\github\espryth\easyjoin\util\ColorUtil.class
+io\github\espryth\easyjoin\file\FilesManager.class
+io\github\espryth\easyjoin\util\nms\SimpleNMSSetup.class
+io\github\espryth\easyjoin\actions\ActionsManager.class
+io\github\espryth\easyjoin\Core.class
+io\github\espryth\easyjoin\listeners\JoinListener.class
+io\github\espryth\easyjoin\util\nms\NMSSetup.class
+io\github\espryth\easyjoin\listeners\QuitListener.class

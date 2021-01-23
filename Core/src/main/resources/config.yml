@@ -1,0 +1,58 @@
+#
+#   - '[BROADCAST] This send a message to all online players.'
+#   - '[JSON_BROADCAST] {"text":"Send broadcast json!!"}' # You can create json formats here: https://minecraftjson.com/
+#   - '[MESSAGE] This send a message to the join player'
+#   - '[JSON_MESSAGE] {"text":"Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}}'
+#   - '[TITLE] Title;Subtitle;FadeIn;FadeShow;FadeOut'
+#   - '[BROADCAST_TITLE] Title;Subtitle;FadeIn;FadeShow;FadeOut'
+#   - '[ACTIONBAR] Message'
+#   - '[BROADCAST_ACTIONBAR] Message;FadeShow'
+#   - '[SOUND] Sound;pitch;volume'
+#   - '[BROADCAST_SOUND] Sound;pitch;volume' # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
+#   - '[PLAYER] me Hello!' # This execute a player command
+#   - '[CONSOLE] give %player_name% diamond 1'
+#   - '[CLEARCHAT] 10' #Clear the player chat on join with custom lines.
+#   - '[BOOK] ' #It opens the book on book.yml to add it you need write a book and use /ej setbook!
+#
+# Active AuthMe to send the actions after login/register
+AuthMeHook: false
+FirstJoin:
+  enable: true
+  join:
+    actions:
+      - '[BROADCAST] &8(&a+&8) &f%player_name% &6(%count%)'
+      - '[TITLE] &aWelcome %player_name%;&fYou are the player &6#%count%;10;35;10'
+      - '[SOUND] LEVEL_UP;10;5'
+      - '[ACTIONBAR] &ashop.example.com'
+      - '[JSON_MESSAGE] {"text":"&9Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}'
+# If you are using AuthMeHook you can add authme actions.
+#  authme:
+#    actions:
+#      - '[BROADCAST] This is a authme action!'
+Formats:
+  # permission: easyjoin.admin
+  admin:
+    priority: 10
+    join:
+      # Execute join actions before x ticks, if it don't exist the default value is 0 so you will haven't delay
+      # delay: 10
+      actions:
+        - '[BROADCAST] &8(&a+&8) &c&lADMIN &f%player_name%'
+        - '[SOUND] LEVEL_UP;10;5'
+        - '[ACTIONBAR] &ashop.example.com'
+        - '[JSON_MESSAGE] {"text":"&9Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}'
+    #   On quit actions you can use: [broadcast] or [broadcast-json]
+    quit:
+      actions:
+        - '[BROADCAST] &8(&c-&8) &f%player_name%'
+  # permission: easyjoin.default
+  default:
+    priority: 5
+    join:
+      actions:
+        - '[BROADCAST] &8(&a+&8) &f%player_name%'
+        - '[SOUND] LEVEL_UP;10;5'
+        - '[ACTIONBAR] &ashop.example.com;10'
+    quit:
+      actions:
+        - '[BROADCAST] &8(&c-&8) &f%player_name%'

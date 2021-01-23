@@ -1,0 +1,11 @@
+name: EasyJoin
+main: io.github.espryth.easyjoin.Core
+version: 2.0.9
+author: Espryth
+depend: [PlaceholderAPI]
+softdepend: [AuthMe]
+commands:
+  easyjoin:
+    usage: /<command>
+    aliases:
+      - ej
