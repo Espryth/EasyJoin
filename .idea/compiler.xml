@@ -21,6 +21,7 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="Core" target="1.8" />
       <module name="easyjoin-versions-v1_13_R2" target="8" />
     </bytecodeTargetLevel>
   </component>
