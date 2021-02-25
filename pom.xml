@@ -56,6 +56,5 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.target>1.8</maven.compiler.target>
         <maven.compiler.source>1.8</maven.compiler.source>
-        <parent.version>2.1.0</parent.version>
     </properties>
 </project>
