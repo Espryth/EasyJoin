@@ -6,25 +6,23 @@ import me.espryth.easyjoin.listeners.PlayerJoinListener;
 import me.espryth.easyjoin.listeners.PlayerQuitListener;
 import me.espryth.easyjoin.listeners.authme.LoginListener;
 import me.espryth.easyjoin.listeners.authme.RegisterListener;
+import me.espryth.easyjoin.util.ColorUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.PluginManager;
 
 public class MainService implements Service {
 
-    private final Service formatService;
-
     private final Core core;
 
     public MainService(Core core) {
         this.core = core;
-        this.formatService = new FormatService(core);
     }
 
     @Override
     public void start() {
         registerCommands();
         registerListeners();
-        formatService.start();
+        sendInitMessage();
     }
 
     private void registerCommands() {
@@ -41,5 +39,11 @@ public class MainService implements Service {
             pm.registerEvents(new LoginListener(core), core);
             pm.registerEvents(new RegisterListener(core), core);
         }
+    }
+
+    public void sendInitMessage() {
+        Bukkit.getConsoleSender().sendMessage(ColorUtil.apply("&6| &6|"));
+        Bukkit.getConsoleSender().sendMessage(ColorUtil.apply("&6| &e| &eEasyJoin &f2.1.0 by Espryth"));
+        Bukkit.getConsoleSender().sendMessage(ColorUtil.apply("&6| &6|"));
     }
 }

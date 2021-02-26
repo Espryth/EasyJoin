@@ -22,6 +22,8 @@ public class PlayerQuitListener implements Listener {
     @EventHandler
     public void onPlayerQuit(PlayerQuitEvent event) {
 
+        event.setQuitMessage(null);
+
         Player player = event.getPlayer();
 
         List<Integer> priorityList = new ArrayList<>();

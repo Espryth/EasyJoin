@@ -10,10 +10,10 @@ import org.bukkit.inventory.ItemStack;
 
 public class MainCommand implements CommandExecutor {
 
-    private final Core plugin;
+    private final Core core;
 
-    public MainCommand(Core plugin) {
-        this.plugin = plugin;
+    public MainCommand(Core core) {
+        this.core = core;
     }
 
     @Override
@@ -21,8 +21,7 @@ public class MainCommand implements CommandExecutor {
         if(sender.hasPermission("easyjoin.admin")) {
             if(args.length == 1) {
                 if(args[0].equalsIgnoreCase("reload")) {
-                    plugin.getFilesManager().getConfig().reload();
-                    plugin.getFilesManager().getBook().reload();
+                    core.restartPlugin();
                     sender.sendMessage(ColorUtil.apply("&aConfiguration reloaded!"));
 
                     return true;
@@ -30,8 +29,8 @@ public class MainCommand implements CommandExecutor {
                     if(sender instanceof Player) {
                         Player player = (Player) sender;
                         ItemStack item = player.getItemInHand();
-                        plugin.getFilesManager().getBook().set("book", item);
-                        plugin.getFilesManager().getBook().save();
+                        core.getFilesManager().getBook().set("book", item);
+                        core.getFilesManager().getBook().save();
                         sender.sendMessage(ColorUtil.apply("&aBook register!"));
                         return true;
                     }
@@ -39,12 +38,12 @@ public class MainCommand implements CommandExecutor {
                     return true;
                 }
             }
-            sender.sendMessage(ColorUtil.apply("&e&lEasy&6&lJoin &f" + plugin.getDescription().getVersion() + " by Espryth"));
+            sender.sendMessage(ColorUtil.apply("&e&lEasy&6&lJoin &f" + core.getDescription().getVersion() + " by Espryth"));
             sender.sendMessage(ColorUtil.apply("&f- /ej reload"));
             sender.sendMessage(ColorUtil.apply("&f- /ej setbook"));
             return true;
         }
-        sender.sendMessage(ColorUtil.apply("&e&lEasy&6&lJoin &f" + plugin.getDescription().getVersion() + " by Espryth"));
+        sender.sendMessage(ColorUtil.apply("&e&lEasy&6&lJoin &f" + core.getDescription().getVersion() + " by Espryth"));
         return true;
     }
 }

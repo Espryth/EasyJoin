@@ -2,6 +2,7 @@ package me.espryth.easyjoin;
 
 import me.espryth.easyjoin.file.FilesManager;
 import me.espryth.easyjoin.format.Format;
+import me.espryth.easyjoin.service.FormatService;
 import me.espryth.easyjoin.service.MainService;
 import me.espryth.easyjoin.service.Service;
 import me.espryth.easyjoin.util.nms.NMSSetup;
@@ -20,6 +21,7 @@ public class Core extends JavaPlugin {
     private FilesManager filesManager;
 
     private Service mainService;
+    private Service formatService;
 
     @Override
     public void onLoad() {
@@ -27,6 +29,7 @@ public class Core extends JavaPlugin {
         this.nmsSetup = new SimpleNMSSetup();
         this.filesManager = new FilesManager(this);
         this.mainService = new MainService(this);
+        this.formatService = new FormatService(this);
     }
 
     @Override
@@ -34,6 +37,15 @@ public class Core extends JavaPlugin {
         this.filesManager.setup();
         this.nmsSetup.enableNMS();
         this.mainService.start();
+        this.formatService.start();
+    }
+
+    public void restartPlugin() {
+        this.formatMap = new HashMap<>();
+        this.filesManager.getConfig().reload();
+        this.filesManager.getBook().reload();
+        this.formatService = new FormatService(this);
+        this.formatService.start();
     }
 
     public NMSSetup getNmsSetup() {

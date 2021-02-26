@@ -1,12 +1,15 @@
 package me.espryth.easyjoin.action;
 
 import me.espryth.easyjoin.Core;
-import io.github.espryth.easyjoin.action.impl.*;
 import me.espryth.easyjoin.action.impl.*;
 
 public class ActionManager {
 
-    private Core core;
+    private final Core core;
+
+    public ActionManager(Core core) {
+        this.core = core;
+    }
 
     public Action getActionByType(ActionType type, String line) {
         switch (type) {

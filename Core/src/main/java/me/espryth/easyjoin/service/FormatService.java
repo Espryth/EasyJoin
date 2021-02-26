@@ -22,7 +22,7 @@ public class FormatService implements Service {
     public FormatService(Core core) {
         this.filesManager = core.getFilesManager();
         this.formatMap = core.getFormatMap();
-        this.actionManager = new ActionManager();
+        this.actionManager = new ActionManager(core);
     }
 
     @Override
@@ -44,7 +44,7 @@ public class FormatService implements Service {
                 if (config.contains("Formats." + path + ".join.delay")) {
                     format.setDelay(config.getInt("Formats." + path + ".join.delay"));
                 }
-                for (String joinAction : config.getConfigurationSection("Formats." + path + ".join").getKeys(false)) {
+                for (String joinAction : config.getStringList("Formats." + path + ".join.actions")) {
                     for (ActionType actionType : ActionType.values()) {
                         if (joinAction.startsWith(actionType.getIdentifier())) {
                             String line = joinAction.replace(actionType.getIdentifier(), "");
@@ -55,8 +55,8 @@ public class FormatService implements Service {
                 }
             }
 
-            if (config.contains("Formats." + path + ".quit")) {
-                for (String quitAction : config.getConfigurationSection("Formats." + path + ".quit").getKeys(false)) {
+            if (config.contains("Formats." + path + ".quit.actions")) {
+                for (String quitAction : config.getStringList("Formats." + path + ".quit.actions")) {
                     for (ActionType actionType : ActionType.values()) {
                         if (quitAction.startsWith(actionType.getIdentifier())) {
                             String line = quitAction.replace(actionType.getIdentifier(), "");
@@ -67,8 +67,8 @@ public class FormatService implements Service {
                 }
             }
 
-            if (config.contains("Formats." + path + ".authme")) {
-                for (String authMeAction : config.getConfigurationSection("Formats." + path + ".authme").getKeys(false)) {
+            if (config.contains("Formats." + path + ".authme.actions")) {
+                for (String authMeAction : config.getStringList("Formats." + path + ".authme.actions")) {
                     for (ActionType actionType : ActionType.values()) {
                         if (authMeAction.startsWith(actionType.getIdentifier())) {
                             String line = authMeAction.replace(actionType.getIdentifier(), "");

@@ -20,8 +20,10 @@ public class PlayerJoinListener implements Listener {
         this.core = core;
     }
 
-    @EventHandler()
+    @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+
+        event.setJoinMessage(null);
 
         Player player  = event.getPlayer();
 

@@ -1,6 +1,5 @@
 package me.espryth.easyjoin.util.nms;
 
-import io.github.espryth.easyjoin.api.*;
 import me.espryth.easyjoin.api.*;
 import org.bukkit.Bukkit;
 
@@ -49,10 +48,9 @@ public class SimpleNMSSetup implements NMSSetup{
                 nmsHandler=new NMSHandler_1_16_R3();
                 break;
             default:
-                Bukkit.getLogger().severe("Your server version is not supported!");
+                Bukkit.getLogger().severe("[EasyJoin] Your server version is not supported!");
                 return false;
         }
-        Bukkit.getLogger().info("Enabled nms handler!");
         return true;
     }
 
