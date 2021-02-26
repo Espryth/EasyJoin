@@ -41,7 +41,8 @@ public class ActionManager {
                 return new PlayerCommandAction(line);
             case CONSOLE_COMMAND:
                 return new ConsoleCommandAction(line);
-
+            case FIREWORK:
+                return new FireworkAction(line);
         }
         return null;
     }

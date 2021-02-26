@@ -13,6 +13,7 @@
 #   - '[CONSOLE] give %player_name% diamond 1'
 #   - '[CLEARCHAT] 10' #Clear the player chat on join with custom lines.
 #   - '[BOOK] ' #It opens the book on book.yml to add it you need write a book and use /ej setbook!
+#   - '[FIREWORK] Type;amount;power;255,0,255;255,0,255;255,0,255;255,0,255' #You can customize the firework with RGB values!
 #
 # Active AuthMe to send the actions after login/register
 AuthMeHook: false
@@ -48,6 +49,7 @@ Formats:
         - '[BROADCAST] &8(&a+&8) &f%player_name%'
         - '[SOUND] LEVEL_UP;10;5'
         - '[ACTIONBAR] &ashop.example.com;10'
+        - '[FIREWORK] STAR;10;2;255,120,200;100,50,30;10,20,30;40;10;20'
     quit:
       actions:
         - '[BROADCAST] &8(&c-&8) &f%player_name%'

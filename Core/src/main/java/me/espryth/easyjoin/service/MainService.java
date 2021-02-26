@@ -43,7 +43,7 @@ public class MainService implements Service {
 
     public void sendInitMessage() {
         Bukkit.getConsoleSender().sendMessage(ColorUtil.apply("&6| &6|"));
-        Bukkit.getConsoleSender().sendMessage(ColorUtil.apply("&6| &e| &eEasyJoin &f2.1.0 by Espryth"));
+        Bukkit.getConsoleSender().sendMessage(ColorUtil.apply("&6| &e| &eEasyJoin &f"+core.getDescription().getVersion()+" by Espryth"));
         Bukkit.getConsoleSender().sendMessage(ColorUtil.apply("&6| &6|"));
     }
 }

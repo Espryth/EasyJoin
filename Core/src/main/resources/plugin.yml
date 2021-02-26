@@ -1,6 +1,6 @@
 name: EasyJoin
 main: me.espryth.easyjoin.Core
-version: 2.1.0
+version: 2.1.1
 author: Espryth
 depend: [PlaceholderAPI]
 softdepend: [AuthMe]

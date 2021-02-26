@@ -14,7 +14,8 @@ public enum ActionType {
     CLEARCHAT("[CLEARCHAT] "),
     BOOK("[BOOK] "),
     PLAYER_COMMAND("[PLAYER] "),
-    CONSOLE_COMMAND("[CONSOLE] ");
+    CONSOLE_COMMAND("[CONSOLE] "),
+    FIREWORK("[FIREWORK] ");
 
 
     private final String identifier;
