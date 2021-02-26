@@ -1,6 +1,7 @@
 package me.espryth.easyjoin.service;
 
 import me.espryth.easyjoin.Core;
+import me.espryth.easyjoin.action.AbstractAction;
 import me.espryth.easyjoin.action.Action;
 import me.espryth.easyjoin.action.ActionManager;
 import me.espryth.easyjoin.action.ActionType;

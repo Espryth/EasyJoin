@@ -1,12 +1,12 @@
 package me.espryth.easyjoin.action.impl;
 
 import me.espryth.easyjoin.Core;
-import me.espryth.easyjoin.action.Action;
+import me.espryth.easyjoin.action.AbstractAction;
 import me.espryth.easyjoin.action.ActionType;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-public class BookAction extends Action {
+public class BookAction extends AbstractAction {
 
     private final Core core;
 

@@ -1,12 +1,12 @@
 package me.espryth.easyjoin.action.impl;
 
-import me.espryth.easyjoin.action.Action;
+import me.espryth.easyjoin.action.AbstractAction;
 import me.espryth.easyjoin.action.ActionType;
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
-public class SoundAction extends Action {
+public class SoundAction extends AbstractAction {
 
     public SoundAction(String line) {
         super(ActionType.SOUND, line);

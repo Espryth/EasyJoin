@@ -1,30 +1,12 @@
 package me.espryth.easyjoin.action;
 
-import me.espryth.easyjoin.util.ColorUtil;
 import org.bukkit.entity.Player;
 
-public class Action {
+public interface Action {
+    void execute(Player player);
+    ActionType getType();
 
-    private final ActionType type;
+    String getLine();
 
-    private String line;
-
-    public Action(ActionType type, String line) {
-        this.type = type;
-        this.line = ColorUtil.apply(line);
-    }
-
-    public void execute(Player player){}
-
-    public ActionType getType() {
-        return type;
-    }
-
-    public String getLine() {
-        return line;
-    }
-
-    public void setLine(String line) {
-        this.line = line;
-    }
+    void setLine(String line);
 }
