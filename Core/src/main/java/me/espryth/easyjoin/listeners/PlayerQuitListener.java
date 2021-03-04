@@ -29,10 +29,12 @@ public class PlayerQuitListener implements Listener {
         List<Integer> priorityList = new ArrayList<>();
 
         for(Format format : core.getFormatMap().values()) {
-            if(player.hasPermission("easyjoin." + format.getIdentifier())) {
+            if(player.hasPermission("easyjoin." + format.getIdentifier()) && !format.isFirstJoinFormat()) {
                 priorityList.add(format.getPriority());
             }
         }
+
+        if(priorityList.isEmpty()) return;
 
         int highPriority = Collections.<Integer>max(priorityList);
 

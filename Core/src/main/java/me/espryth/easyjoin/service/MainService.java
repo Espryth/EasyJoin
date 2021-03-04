@@ -2,6 +2,7 @@ package me.espryth.easyjoin.service;
 
 import me.espryth.easyjoin.Core;
 import me.espryth.easyjoin.commands.MainCommand;
+import me.espryth.easyjoin.listeners.PlayerFirstJoinListener;
 import me.espryth.easyjoin.listeners.PlayerJoinListener;
 import me.espryth.easyjoin.listeners.PlayerQuitListener;
 import me.espryth.easyjoin.listeners.authme.LoginListener;
@@ -33,6 +34,7 @@ public class MainService implements Service {
 
         PluginManager pm = Bukkit.getPluginManager();
         pm.registerEvents(new PlayerJoinListener(core), core);
+        pm.registerEvents(new PlayerFirstJoinListener(core), core);
         pm.registerEvents(new PlayerQuitListener(core), core);
 
         if(core.getFilesManager().getConfig().getBoolean("AuthMeHook")) {

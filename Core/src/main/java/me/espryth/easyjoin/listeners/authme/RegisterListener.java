@@ -27,18 +27,19 @@ public class RegisterListener implements Listener {
         List<Integer> priorityList = new ArrayList<>();
 
         for(Format format : core.getFormatMap().values()) {
-            if(player.hasPermission("easyjoin." + format.getIdentifier())) {
+            if(player.hasPermission("easyjoin." + format.getIdentifier()) && format.isFirstJoinFormat()) {
                 priorityList.add(format.getPriority());
             }
         }
 
+        if(priorityList.isEmpty()) return;
+
         int highPriority = Collections.<Integer>max(priorityList);
+
 
         for(Format format : core.getFormatMap().values()) {
             if(player.hasPermission("easyjoin." + format.getIdentifier()) && format.getPriority() == highPriority) {
-                if(format.isFirstJoinFormat()) {
-                    format.getAuthMeActions().forEach(action -> action.execute(player));
-                }
+                format.getAuthMeActions().forEach(action -> action.execute(player));
                 return;
             }
         }

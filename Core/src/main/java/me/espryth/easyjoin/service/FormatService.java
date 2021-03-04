@@ -35,7 +35,7 @@ public class FormatService implements Service {
             String identifier = config.getString("Formats." + path);
             int priority = config.getInt("Formats." + path + ".priority");
             boolean isFirstJoinFormat = false;
-            if (config.contains("Formats." + path + "isFirstJoinFormat")) {
+            if (config.contains("Formats." + path + ".isFirstJoinFormat")) {
                 isFirstJoinFormat = config.getBoolean("Formats." + path + ".isFirstJoinFormat");
             }
 
