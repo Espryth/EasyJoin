@@ -2,6 +2,7 @@ package me.espryth.easyjoin.plugin.action.impl;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import me.espryth.easyjoin.plugin.action.AbstractAction;
+import me.espryth.easyjoin.plugin.utils.MessageUtils;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.chat.ComponentSerializer;
 import org.bukkit.Bukkit;
@@ -11,7 +12,16 @@ public class JsonBroadcastAction extends AbstractAction {
     @Override
     public void execute(Player player) {
         setLine(PlaceholderAPI.setPlaceholders(player, getLine()));
-        BaseComponent[] baseComponent = ComponentSerializer.parse(getLine());
-        Bukkit.getOnlinePlayers().forEach(p -> p.spigot().sendMessage(baseComponent));
+
+        BaseComponent[] components;
+
+        if(getLine().startsWith("<c>")) {
+            setLine(getLine().replace("<c>", ""));
+            components = MessageUtils.getCenteredComponents(ComponentSerializer.parse(getLine()));
+        } else {
+            components = ComponentSerializer.parse(getLine());
+        }
+
+        Bukkit.getOnlinePlayers().forEach(p -> p.spigot().sendMessage(components));
     }
 }

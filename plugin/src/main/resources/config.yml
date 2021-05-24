@@ -22,27 +22,30 @@ AuthMeHook: false
 #    actions:
 #      - '[BROADCAST] This is a authme action!'
 Formats:
-  # permission: easyjoin.admin
+# permission: easyjoin.admin
   admin:
     priority: 10
     join:
-      # Execute join actions before x ticks, if it don't exist the default value is 0 so you will haven't delay
-      # delay: 10
+#     Execute join actions before x ticks, if it don't exist the default value is 0 so you will haven't delay
+#     delay: 10
       actions:
+#     Add centered messages adding <c> at the start of the message.
+#     [BROADCAST] <c>Centered message!
+#     [JSON_BROADCAST] <c>{"text":"A centered json message!"}
         - '[BROADCAST] &8(&a+&8) &c&lADMIN &f%player_name%'
         - '[SOUND] LEVEL_UP;10;5'
         - '[ACTIONBAR] &ashop.example.com'
         - '[JSON_MESSAGE] {"text":"&9Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}'
-    # authme:
-    #    actions:
-    #      - '[BROADCAST] This is a authme action!'
+#   authme:
+#    actions:
+#      - '[BROADCAST] This is a authme action!'
     quit:
       actions:
         - '[BROADCAST] &8(&c-&8) &f%player_name%'
-  # permission: easyjoin.default
+# permission: easyjoin.default
   default:
-    # You can transform any format to first join format
-    #isFirstJoinFormat: true
+#   You can transform any format to first join format
+#   isFirstJoinFormat: true
     priority: 5
     join:
       actions:
