@@ -9,12 +9,14 @@ public class MessageAction extends AbstractAction {
 
     @Override
     public void execute(Player player) {
-        setLine(PlaceholderAPI.setPlaceholders(player, getLine()));
+
+        String newLine = PlaceholderAPI.setPlaceholders(player, MessageUtils.colorize(getLine()));
         
         if(getLine().startsWith("<c>")) {
-            setLine(MessageUtils.getCenteredMessage(getLine().replace("<c>", "")));
+            player.sendMessage(MessageUtils.getCenteredMessage(newLine.replace("<c>", "")));
+            return;
         }
 
-        player.sendMessage(getLine());
+        player.sendMessage(newLine);
     }
 }

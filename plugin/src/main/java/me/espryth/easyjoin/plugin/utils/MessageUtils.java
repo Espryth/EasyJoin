@@ -1,29 +1,36 @@
 package me.espryth.easyjoin.plugin.utils;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MessageUtils {
 
     private final static int CENTER_PX = 154;
 
+    private final static Pattern HEX_COLOR_PATTERN = Pattern.compile("&\\[([\\dA-Fa-f])([\\dA-Fa-f])," +
+            "([\\dA-Fa-f])([\\dA-Fa-f])," +
+            "([\\dA-Fa-f])([\\dA-Fa-f])]");
+
+    private final static String BUKKIT_HEX_COLOR = ChatColor.COLOR_CHAR + "x" +
+            ChatColor.COLOR_CHAR + "$1" +
+            ChatColor.COLOR_CHAR + "$2" +
+            ChatColor.COLOR_CHAR + "$3" +
+            ChatColor.COLOR_CHAR + "$4" +
+            ChatColor.COLOR_CHAR + "$5" +
+            ChatColor.COLOR_CHAR + "$6";
+
     public static String colorize(String text) {
-        if (Bukkit.getVersion().contains("1.16")) {
-            Pattern hexPattern = Pattern.compile("#[a-fA-F0-9]{6}");
-            Matcher matcher = hexPattern.matcher(text);
-            while (matcher.find()) {
-                String color = text.substring(matcher.start(), matcher.end());
-                text = text.replace(color, ChatColor.of(color) + "");
-                matcher = hexPattern.matcher(text);
-            }
-        }
-        return ChatColor.translateAlternateColorCodes('&', text);
+        String newText = HEX_COLOR_PATTERN.matcher(text).replaceAll(BUKKIT_HEX_COLOR);
+        return ChatColor.translateAlternateColorCodes('&', newText);
+    }
+
+    public static String formatString(Player player, String s) {
+        return PlaceholderAPI.setPlaceholders(player, colorize(s));
     }
 
     public static String getCenteredMessage(String message) {
@@ -39,6 +46,7 @@ public class MessageUtils {
         boolean isBold = false;
 
         for(char c : message.toCharArray()){
+
             if(c == '§'){
                 previousCode = true;
                 continue;

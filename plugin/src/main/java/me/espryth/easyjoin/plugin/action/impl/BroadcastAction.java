@@ -10,12 +10,13 @@ public class BroadcastAction extends AbstractAction {
 
     @Override
     public void execute(Player player) {
-        setLine(PlaceholderAPI.setPlaceholders(player, getLine()));
+
+        String newLine = MessageUtils.formatString(player, getLine());
 
         if(getLine().startsWith("<c>")) {
-            setLine(MessageUtils.getCenteredMessage(getLine().replace("<c>", "")));
+            Bukkit.broadcastMessage(MessageUtils.getCenteredMessage(newLine.replace("<c>", "")));
+            return;
         }
-
-        Bukkit.broadcastMessage(getLine());
+        Bukkit.broadcastMessage(newLine);
     }
 }

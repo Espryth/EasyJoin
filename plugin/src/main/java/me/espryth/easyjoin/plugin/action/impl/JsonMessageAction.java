@@ -10,15 +10,16 @@ import org.bukkit.entity.Player;
 public class JsonMessageAction extends AbstractAction {
     @Override
     public void execute(Player player) {
-        setLine(PlaceholderAPI.setPlaceholders(player, getLine()));
+
+        String newLine = MessageUtils.formatString(player, getLine());
 
         BaseComponent[] components;
 
         if(getLine().startsWith("<c>")) {
-            setLine(getLine().replace("<c>", ""));
-            components = MessageUtils.getCenteredComponents(ComponentSerializer.parse(getLine()));
+            components = MessageUtils.getCenteredComponents(
+                    ComponentSerializer.parse(newLine.replace("<c>", "")));
         } else {
-            components = ComponentSerializer.parse(getLine());
+            components = ComponentSerializer.parse(newLine);
         }
 
         player.spigot().sendMessage(components);

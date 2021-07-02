@@ -8,7 +8,7 @@ import org.bukkit.entity.Player;
 public class ConsoleCommandAction extends AbstractAction {
     @Override
     public void execute(Player player) {
-        setLine(PlaceholderAPI.setPlaceholders(player, getLine()));
-        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), getLine());
+        Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
+                PlaceholderAPI.setPlaceholders(player, getLine()));
     }
 }
