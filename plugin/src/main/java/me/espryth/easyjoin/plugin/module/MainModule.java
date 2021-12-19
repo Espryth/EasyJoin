@@ -1,14 +1,13 @@
 package me.espryth.easyjoin.plugin.module;
 
-import me.espryth.commons.universal.module.AbstractModule;
-import me.espryth.easyjoin.abstraction.NMS;
+import dev.henko.storance.Binder;
+import dev.henko.storance.StoranceModule;
 import me.espryth.easyjoin.plugin.EasyJoin;
-import me.espryth.easyjoin.plugin.NMSFactory;
 import me.espryth.easyjoin.plugin.format.FormatExecutor;
 import me.espryth.easyjoin.plugin.utils.YamlFile;
 import org.bukkit.plugin.Plugin;
 
-public class MainModule extends AbstractModule {
+public class MainModule implements StoranceModule {
 
     private final EasyJoin plugin;
 
@@ -16,20 +15,19 @@ public class MainModule extends AbstractModule {
         this.plugin = plugin;
     }
 
-
     @Override
-    public void configure() {
+    public void configure(Binder binder) {
 
-        bind(Plugin.class, plugin);
-        bind(EasyJoin.class, plugin);
+        binder.bind(Plugin.class).toInstance(plugin);
+        binder.bind(EasyJoin.class).toInstance(plugin);
 
-        bind(NMS.class, NMSFactory.getNMS());
+        binder.install(AdapterModuleFactory.create());
 
-        bind(YamlFile.class, new YamlFile(plugin, "config"), "config");
-        bind(YamlFile.class, new YamlFile(plugin, "book"), "book");
+        binder.bind(YamlFile.class).named("config").toInstance(new YamlFile(plugin, "config"));
+        binder.bind(YamlFile.class).named("book").toInstance(new YamlFile(plugin, "book"));
 
-        bind(FormatExecutor.class, new FormatExecutor());
+        binder.bind(FormatExecutor.class).toInstance(new FormatExecutor());
 
-        install(new ActionModule());
+        binder.install(new ActionModule());
     }
 }

@@ -1,6 +1,6 @@
 package me.espryth.easyjoin.plugin.action.impl;
 
-import me.espryth.easyjoin.abstraction.NMS;
+import me.espryth.easyjoin.adapt.BookSender;
 import me.espryth.easyjoin.plugin.action.AbstractAction;
 import me.espryth.easyjoin.plugin.utils.YamlFile;
 import org.bukkit.Bukkit;
@@ -13,12 +13,12 @@ public class BookAction extends AbstractAction {
 
     private final Plugin plugin;
     private final YamlFile bookFile;
-    private final NMS nms;
+    private final BookSender bookSender;
 
     public BookAction() {
         plugin = CONTAINER.get(Plugin.class);
         bookFile = CONTAINER.get(YamlFile.class, "book");
-        nms = CONTAINER.get(NMS.class);
+        bookSender = CONTAINER.get(BookSender.class);
     }
 
     @Override
@@ -27,7 +27,7 @@ public class BookAction extends AbstractAction {
         if(!bookFile.contains("book")) return;
 
         Bukkit.getScheduler().runTaskLater(plugin, () ->
-                nms.openBook(player, bookFile.getItemStack("book")),
+                bookSender.send(player, bookFile.getItemStack("book")),
                 Integer.parseInt(getLine()));
     }
 }

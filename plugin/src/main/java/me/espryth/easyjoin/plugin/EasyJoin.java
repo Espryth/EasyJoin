@@ -1,8 +1,8 @@
 package me.espryth.easyjoin.plugin;
 
-import me.espryth.commons.universal.module.BasicModuleInjector;
-import me.espryth.commons.universal.module.ModuleInjector;
-import me.espryth.commons.universal.module.container.Container;
+import dev.henko.storance.Container;
+import dev.henko.storance.ModuleInjector;
+import dev.henko.storance.impl.ModuleInjectorImpl;
 import me.espryth.easyjoin.plugin.command.MainCommand;
 import me.espryth.easyjoin.plugin.format.Format;
 import me.espryth.easyjoin.plugin.loader.FormatLoader;
@@ -19,17 +19,18 @@ import java.util.Map;
 
 public class EasyJoin extends JavaPlugin {
 
-    private static final ModuleInjector INJECTOR = new BasicModuleInjector();
+    private static final ModuleInjector INJECTOR = new ModuleInjectorImpl();
     public static final Container CONTAINER = INJECTOR.getContainer();
 
     public static final String SERVER_VERSION =
-            Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3].substring(1);
+            Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]
+              .substring(1).replace("1_", "")
+              .replaceAll("_R\\d", "");
 
     private final Map<String, Format> formatMap = new HashMap<>();
 
     private Loader listenerLoader;
     private Loader formatLoader;
-
 
     @Override
     public void onLoad() {

@@ -6,7 +6,7 @@
 
     <groupId>me.espryth.easyjoin</groupId>
     <artifactId>easyjoin-parent</artifactId>
-    <version>2.1.8</version>
+    <version>2.1.9</version>
     <packaging>pom</packaging>
 
     <build>
@@ -24,20 +24,7 @@
                         </goals>
                     </execution>
                 </executions>
-                <configuration>
-                    <filters>
-                        <filter>
-                            <artifact>*:*</artifact>
-                            <excludes>
-                                <exclude>me/espryth/commons/universal/configuration/*</exclude>
-                                <exclude>me/espryth/commons/universal/command/*</exclude>
-                                <exclude>me/espryth/commons/universal/command/annotation/*</exclude>
-                                <exclude>me/espryth/commons/universal/command/part/*</exclude>
-                                <exclude>me/espryth/commons/universal/loader/*</exclude>
-                            </excludes>
-                        </filter>
-                    </filters>
-                </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -52,9 +39,8 @@
     </build>
 
     <modules>
-        <module>abstraction</module>
-        <module>versions</module>
         <module>plugin</module>
+        <module>adapt</module>
     </modules>
 
     <repositories>
@@ -64,6 +50,13 @@
         </repository>
     </repositories>
 
+    <dependencies>
+        <dependency>
+            <groupId>dev.henko</groupId>
+            <artifactId>storance</artifactId>
+            <version>0.1.0-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
