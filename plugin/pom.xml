@@ -63,6 +63,11 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>me.espryth.easyjoin</groupId>
+            <artifactId>easyjoin-versions-v1_18_R1</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>me.espryth</groupId>
             <artifactId>commons-universal</artifactId>
             <version>1.0.0-SNAPSHOT</version>

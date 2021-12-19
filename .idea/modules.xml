@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/EasyJoin.iml" filepath="$PROJECT_DIR$/.idea/EasyJoin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/abstraction/easyjoin-abstraction.iml" filepath="$PROJECT_DIR$/abstraction/easyjoin-abstraction.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/easyjoin-plugin.iml" filepath="$PROJECT_DIR$/plugin/easyjoin-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/easyjoin-versions.iml" filepath="$PROJECT_DIR$/versions/easyjoin-versions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_10_R1/easyjoin-versions-v1_10_R1.iml" filepath="$PROJECT_DIR$/versions/v1_10_R1/easyjoin-versions-v1_10_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_11_R1/easyjoin-versions-v1_11_R1.iml" filepath="$PROJECT_DIR$/versions/v1_11_R1/easyjoin-versions-v1_11_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_12_R1/easyjoin-versions-v1_12_R1.iml" filepath="$PROJECT_DIR$/versions/v1_12_R1/easyjoin-versions-v1_12_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_14_R1/easyjoin-versions-v1_14_R1.iml" filepath="$PROJECT_DIR$/versions/v1_14_R1/easyjoin-versions-v1_14_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_15_R1/easyjoin-versions-v1_15_R1.iml" filepath="$PROJECT_DIR$/versions/v1_15_R1/easyjoin-versions-v1_15_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_16_R3/easyjoin-versions-v1_16_R3.iml" filepath="$PROJECT_DIR$/versions/v1_16_R3/easyjoin-versions-v1_16_R3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_17_R1/easyjoin-versions-v1_17_R1.iml" filepath="$PROJECT_DIR$/versions/v1_17_R1/easyjoin-versions-v1_17_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_18_R1/easyjoin-versions-v1_18_R1.iml" filepath="$PROJECT_DIR$/versions/v1_18_R1/easyjoin-versions-v1_18_R1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_8_R3/easyjoin-versions-v1_8_R3.iml" filepath="$PROJECT_DIR$/versions/v1_8_R3/easyjoin-versions-v1_8_R3.iml" />
+      <module fileurl="file://$PROJECT_DIR$/versions/v1_9_R2/easyjoin-versions-v1_9_R2.iml" filepath="$PROJECT_DIR$/versions/v1_9_R2/easyjoin-versions-v1_9_R2.iml" />
+    </modules>
+  </component>
+</project>
