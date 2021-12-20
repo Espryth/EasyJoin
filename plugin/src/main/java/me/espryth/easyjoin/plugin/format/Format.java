@@ -1,6 +1,7 @@
 package me.espryth.easyjoin.plugin.format;
 
 import me.espryth.easyjoin.plugin.action.Action;
+import me.espryth.easyjoin.plugin.action.ActionType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,7 +10,6 @@ public class Format {
 
     private final String identifier;
     private final int priority;
-    private int delay;
     private final List<Action> joinActions;
     private final List<Action> quitActions;
     private final List<Action> authMeActions;
@@ -20,7 +20,6 @@ public class Format {
                         boolean firstJoinFormat) {
         this.identifier = identifier;
         this.priority = priority;
-        this.delay = 0;
         this.joinActions = new ArrayList<>();
         this.quitActions = new ArrayList<>();
         this.authMeActions = new ArrayList<>();
@@ -35,12 +34,17 @@ public class Format {
         return priority;
     }
 
-    public int getDelay() {
-        return delay;
-    }
 
-    public void setDelay(int delay) {
-        this.delay = delay;
+    public List<Action> getActions(ActionType actionType) {
+        switch (actionType) {
+            case AUTHME:
+                return authMeActions;
+            case JOIN:
+                return joinActions;
+            case QUIT:
+                return quitActions;
+        }
+        return null;
     }
 
     public List<Action> getJoinActions() {
