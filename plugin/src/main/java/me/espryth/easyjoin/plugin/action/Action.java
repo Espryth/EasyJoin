@@ -6,7 +6,7 @@ import java.lang.reflect.InvocationTargetException;
 
 public interface Action {
 
-    void execute(Player player);
+    void execute(Player player, ActionQueue queue);
 
     String getLine();
 

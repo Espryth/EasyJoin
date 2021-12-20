@@ -2,7 +2,10 @@ package me.espryth.easyjoin.plugin.action.impl;
 
 import me.espryth.easyjoin.adapt.TitleSender;
 import me.espryth.easyjoin.plugin.action.AbstractAction;
+import me.espryth.easyjoin.plugin.action.ActionExecutionException;
+import me.espryth.easyjoin.plugin.action.ActionQueue;
 import me.espryth.easyjoin.plugin.utils.MessageUtils;
+import me.espryth.easyjoin.plugin.utils.Title;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -17,13 +20,15 @@ public class BroadcastTitle extends AbstractAction {
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(Player player, ActionQueue queue) {
 
         String[] values = MessageUtils.formatString(player, getLine()).split(";");
 
+        Title title = Title.parse(values);
+
         Bukkit.getOnlinePlayers().forEach(p -> titleSender.send(
-                p, values[0], values[1],
-                Integer.parseInt(values[2]), Integer.parseInt(values[3]), Integer.parseInt(values[4])
-        ));
+          p, title.getTitle(), title.getSubtitle(),
+          title.getFadeIn(), title.getFadeShow(), title.getFadeOut())
+        );
     }
 }

@@ -1,6 +1,8 @@
 package me.espryth.easyjoin.plugin.action.impl;
 
 import me.espryth.easyjoin.plugin.action.AbstractAction;
+import me.espryth.easyjoin.plugin.action.ActionExecutionException;
+import me.espryth.easyjoin.plugin.action.ActionQueue;
 import org.bukkit.entity.Player;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
@@ -8,40 +10,71 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Firework;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FireworkAction extends AbstractAction {
+
     @Override
-    public void execute(Player player) {
+    public void execute(Player player, ActionQueue queue) {
         String[] fireworkValues = getLine().split(";");
 
-        FireworkEffect.Type fireworkEffect = FireworkEffect.Type.valueOf(fireworkValues[0]);
+        if(fireworkValues.length < 3) {
+            throw new ActionExecutionException("Incorrect size of arguments for firework");
+        }
+
+        FireworkEffect.Type fireworkEffect;
+
+        try {
+            fireworkEffect = FireworkEffect.Type.valueOf(fireworkValues[0]);
+        } catch (Exception e) {
+            throw new ActionExecutionException("Invalid firework type");
+        }
 
         Firework firework = (Firework) player.getLocation().getWorld().spawnEntity(player.getLocation(), EntityType.FIREWORK);
-
         FireworkMeta fireworkMeta = firework.getFireworkMeta();
 
         int amount = Integer.parseInt(fireworkValues[1])-1;
         int power = Integer.parseInt(fireworkValues[2]);
 
-        String[] colorValues = fireworkValues[3].split(",");
-        String[] otherColorValues = fireworkValues[4].split(",");
-        String[] fadeValues = fireworkValues[5].split(",");
-        String[] otherFadeValues = fireworkValues[6].split(",");
+        List<Color> colors = new ArrayList<>();
+        List<Color> fades = new ArrayList<>();
 
-        Color color = Color.fromBGR(
-                Integer.parseInt(colorValues[0]), Integer.parseInt(colorValues[1]), Integer.parseInt(colorValues[2]));
-        Color otherColor = Color.fromBGR(
-                Integer.parseInt(otherColorValues[0]), Integer.parseInt(otherColorValues[1]), Integer.parseInt(otherColorValues[2]));
-        Color fade = Color.fromBGR(
-                Integer.parseInt(fadeValues[0]), Integer.parseInt(fadeValues[1]), Integer.parseInt(fadeValues[2]));
-        Color otherFade = Color.fromBGR(
-                Integer.parseInt(otherFadeValues[0]), Integer.parseInt(otherFadeValues[1]), Integer.parseInt(otherFadeValues[2]));
+        for(int i = 3; i < fireworkValues.length; i++) {
+            String[] colorValues = fireworkValues[i].split(",");
+
+            if(colorValues.length != 3) {
+                throw new ActionExecutionException("Invalid size of arguments for color");
+            }
+
+            int blue;
+            int green;
+            int red;
+
+            try {
+                blue = Integer.parseInt(colorValues[0]);
+                green = Integer.parseInt(colorValues[1]);
+                red = Integer.parseInt(colorValues[2]);
+            } catch (NumberFormatException e) {
+                throw new ActionExecutionException("Color RGB value isn't a number");
+            }
+
+            Color color = Color.fromRGB(blue, green, red);
+
+            if(i % 2 == 0) {
+                fades.add(color);
+            } else {
+                colors.add(color);
+            }
+
+        }
 
         fireworkMeta.setPower(power);
         fireworkMeta.addEffect(
                 FireworkEffect.builder()
                         .with(fireworkEffect)
-                        .withColor(color, otherColor)
-                        .withFade(fade, otherFade)
+                        .withColor(colors)
+                        .withFade(fades)
                         .trail(true)
                         .build());
 

@@ -24,6 +24,7 @@ public class ActionModule implements StoranceModule {
         binder.bind(Action.class).named("[PLAYER]").toInstance( new PlayerCommandAction());
         binder.bind(Action.class).named("[CONSOLE]").toInstance(new ConsoleCommandAction());
         binder.bind(Action.class).named("[FIREWORK]").toInstance(new FireworkAction());
+        binder.bind(Action.class).named("[DELAY]").toInstance(new DelayAction());
     }
 
 }

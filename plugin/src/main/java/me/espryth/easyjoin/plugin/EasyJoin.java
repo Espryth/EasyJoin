@@ -22,11 +22,6 @@ public class EasyJoin extends JavaPlugin {
     private static final ModuleInjector INJECTOR = new ModuleInjectorImpl();
     public static final Container CONTAINER = INJECTOR.getContainer();
 
-    public static final String SERVER_VERSION =
-            Bukkit.getServer().getClass().getPackage().getName().split("\\.")[3]
-              .substring(1).replace("1_", "")
-              .replaceAll("_R\\d", "");
-
     private final Map<String, Format> formatMap = new HashMap<>();
 
     private Loader listenerLoader;
