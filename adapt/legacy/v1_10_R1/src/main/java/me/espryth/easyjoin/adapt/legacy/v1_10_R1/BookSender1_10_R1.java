@@ -10,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public class BookSender1_10_R1
   implements BookSender {
   @Override
-  public void openBook(Player player, ItemStack book) {
+  public void send(Player player, ItemStack book) {
     ItemStack itemInHand = player.getInventory().getItemInMainHand();
     player.getInventory().setItemInMainHand(book);
     Packets.send(player,

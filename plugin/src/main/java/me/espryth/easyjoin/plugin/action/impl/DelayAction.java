@@ -18,7 +18,7 @@ public class DelayAction extends AbstractAction {
   }
 
   @Override
-  public void execute(Player player, ActionQueue queue) {
+  public void execute(Player player, ActionQueue queue) throws ActionExecutionException {
     int delay;
     try {
       delay = Integer.parseInt(getLine());
@@ -28,7 +28,8 @@ public class DelayAction extends AbstractAction {
     queue.setPaused(true);
     Bukkit.getScheduler().runTaskLater(plugin, () -> {
       queue.setPaused(false);
-    }, delay);
+      queue.executeAll(player);
+    }, delay * 20L);
 
   }
 }

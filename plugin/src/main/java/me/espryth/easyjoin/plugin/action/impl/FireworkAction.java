@@ -16,7 +16,7 @@ import java.util.List;
 public class FireworkAction extends AbstractAction {
 
     @Override
-    public void execute(Player player, ActionQueue queue) {
+    public void execute(Player player, ActionQueue queue) throws ActionExecutionException{
         String[] fireworkValues = getLine().split(";");
 
         if(fireworkValues.length < 3) {

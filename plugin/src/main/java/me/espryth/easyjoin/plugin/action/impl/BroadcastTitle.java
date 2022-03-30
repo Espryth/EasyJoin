@@ -20,7 +20,7 @@ public class BroadcastTitle extends AbstractAction {
     }
 
     @Override
-    public void execute(Player player, ActionQueue queue) {
+    public void execute(Player player, ActionQueue queue) throws ActionExecutionException{
 
         String[] values = MessageUtils.formatString(player, getLine()).split(";");
 

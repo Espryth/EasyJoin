@@ -24,7 +24,7 @@ public class Title {
     this.fadeOut = fadeOut;
   }
 
-  public static Title parse(String[] args) {
+  public static Title parse(String[] args) throws ActionExecutionException{
 
     if(args.length < 5) {
       throw new ActionExecutionException("Incorrect size of arguments for title");

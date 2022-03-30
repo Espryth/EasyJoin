@@ -24,7 +24,7 @@ public class BookAction extends AbstractAction {
     }
 
     @Override
-    public void execute(Player player, ActionQueue queue) {
+    public void execute(Player player, ActionQueue queue) throws ActionExecutionException{
 
         if(!bookFile.contains("book")) {
             throw new ActionExecutionException("Book isn't defined! use /ej setbook");

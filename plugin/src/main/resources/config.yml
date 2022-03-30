@@ -13,7 +13,8 @@
 #   - '[CONSOLE] give %player_name% diamond 1'
 #   - '[CLEARCHAT] 10' #Clear the player chat on join with custom lines.
 #   - '[BOOK] delay' #It opens the book on book.yml to add it you need write a book and use /ej setbook!
-#   - '[FIREWORK] Type;amount;power;255,0,255;255,0,255;255,0,255;255,0,255' #You can customize the firework with RGB values!
+#   - '[FIREWORK] Type;amount;power;255,0,255;255,0,255;255,0,255;255,0,255' #You can customize the firework with RGB values (R,G,B), the first RGB color is a firework color and the second is a fade!
+#   - '[DELAY] 10' #Add delay between actions (the delay is in seconds)
 #
 # Active AuthMe to send the actions after login/register
 AuthMeHook: false

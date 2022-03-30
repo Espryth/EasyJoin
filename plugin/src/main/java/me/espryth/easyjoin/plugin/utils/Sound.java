@@ -16,7 +16,7 @@ public class Sound {
     this.yaw = yaw;
   }
 
-  public static Sound parse(String[] args) {
+  public static Sound parse(String[] args) throws ActionExecutionException{
 
     if(args.length < 3) {
       throw new ActionExecutionException("Incorrect size of arguments for sound");

@@ -11,7 +11,7 @@ public class BookSender1_8_R3
   implements BookSender {
 
   @Override
-  public void openBook(Player player, ItemStack book) {
+  public void send(Player player, ItemStack book) {
     ItemStack itemInHand = player.getItemInHand();
     player.setItemInHand(book);
     Packets.send(player,

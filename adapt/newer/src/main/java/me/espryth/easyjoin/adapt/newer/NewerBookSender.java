@@ -8,7 +8,7 @@ public class NewerBookSender
   implements BookSender {
 
   @Override
-  public void openBook(Player player, ItemStack book) {
+  public void send(Player player, ItemStack book) {
     player.openBook(book);
   }
 }

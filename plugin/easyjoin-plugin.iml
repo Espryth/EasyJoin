@@ -21,17 +21,17 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="adapt" />
-    <orderEntry type="module" module-name="v1_8_R3" />
-    <orderEntry type="module" module-name="v1_9_R2" />
-    <orderEntry type="module" module-name="v1_10_R1" />
-    <orderEntry type="module" module-name="v1_11_R1" />
-    <orderEntry type="module" module-name="v1_12_R1" />
-    <orderEntry type="module" module-name="newer" />
+    <orderEntry type="module" module-name="easyjoin-adapt-api" />
+    <orderEntry type="module" module-name="easyjoin-adapt-legacy-v1_8_R3" />
+    <orderEntry type="module" module-name="easyjoin-adapt-legacy-v1_9_R2" />
+    <orderEntry type="module" module-name="easyjoin-adapt-legacy-v1_10_R1" />
+    <orderEntry type="module" module-name="easyjoin-adapt-legacy-v1_11_R1" />
+    <orderEntry type="module" module-name="easyjoin-adapt-legacy-v1_12_R1" />
+    <orderEntry type="module" module-name="easyjoin-adapt-newer" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.spigotmc:spigot:1.16.5-R0.1-SNAPSHOT" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: me.clip:placeholderapi:2.10.9" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: org.jetbrains:annotations:19.0.0" level="project" />
     <orderEntry type="library" scope="PROVIDED" name="Maven: fr.xephi:authme:5.6.0-SNAPSHOT" level="project" />
-    <orderEntry type="library" name="Maven: dev.henko:storance:0.1.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="Maven: dev.henko:storance:0.1.1-SNAPSHOT" level="project" />
   </component>
 </module>
