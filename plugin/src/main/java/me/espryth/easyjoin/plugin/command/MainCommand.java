@@ -2,6 +2,7 @@ package me.espryth.easyjoin.plugin.command;
 
 import me.espryth.easyjoin.plugin.EasyJoin;
 import me.espryth.easyjoin.plugin.utils.MessageUtils;
+import me.espryth.easyjoin.plugin.utils.RepeatingAction;
 import me.espryth.easyjoin.plugin.utils.YamlFile;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -27,8 +28,8 @@ public class MainCommand implements CommandExecutor {
             if(args.length == 1) {
                 if(args[0].equalsIgnoreCase("reload")) {
                     plugin.reload();
+                    RepeatingAction.cancelAll();
                     sender.sendMessage(MessageUtils.colorize("&aConfiguration reloaded!"));
-
                     return true;
                 } else if(args[0].equalsIgnoreCase("setbook")) {
                     if(sender instanceof Player) {

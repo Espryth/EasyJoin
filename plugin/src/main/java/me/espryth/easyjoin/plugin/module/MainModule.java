@@ -23,11 +23,14 @@ public class MainModule implements StoranceModule {
 
         binder.install(AdapterModuleFactory.create());
 
-        binder.bind(YamlFile.class).named("config").toInstance(new YamlFile(plugin, "config"));
+        YamlFile config = new YamlFile(plugin, "config");
+        YamlFile credentials = new YamlFile(plugin, "credentials");
+        binder.bind(YamlFile.class).named("config").toInstance(config);
         binder.bind(YamlFile.class).named("book").toInstance(new YamlFile(plugin, "book"));
 
         binder.bind(FormatExecutor.class).toInstance(new FormatExecutor());
 
         binder.install(new ActionModule());
+        binder.install(new FirstJoinCheckerModule(config, credentials));
     }
 }

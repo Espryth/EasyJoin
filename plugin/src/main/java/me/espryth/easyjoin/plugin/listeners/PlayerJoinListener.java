@@ -2,8 +2,11 @@ package me.espryth.easyjoin.plugin.listeners;
 
 import me.espryth.easyjoin.plugin.EasyJoin;
 import me.espryth.easyjoin.plugin.action.ActionType;
+import me.espryth.easyjoin.plugin.event.PlayerFirstJoinEvent;
 import me.espryth.easyjoin.plugin.format.Format;
 import me.espryth.easyjoin.plugin.format.FormatExecutor;
+import me.espryth.easyjoin.plugin.format.firstjoin.FirstJoinChecker;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -17,10 +20,12 @@ import static me.espryth.easyjoin.plugin.EasyJoin.CONTAINER;
 
 public class PlayerJoinListener implements Listener {
 
+    private final FirstJoinChecker firstJoinChecker;
     private final FormatExecutor formatExecutor;
     private final Map<String, Format> formatMap;
 
     public PlayerJoinListener() {
+        firstJoinChecker = CONTAINER.get(FirstJoinChecker.class);
         formatExecutor = CONTAINER.get(FormatExecutor.class);
         formatMap = CONTAINER.get(EasyJoin.class).getFormatMap();
     }
@@ -32,7 +37,10 @@ public class PlayerJoinListener implements Listener {
 
         event.setJoinMessage(null);
 
-        if(!player.hasPlayedBefore()) return;
+        if(firstJoinChecker.isFirstJoin(player)) {
+            Bukkit.getPluginManager().callEvent(new PlayerFirstJoinEvent(player));
+            return;
+        }
 
         Collection<Format> joinFormats = formatMap.values()
                 .stream()

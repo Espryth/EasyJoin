@@ -1,6 +1,6 @@
 name: EasyJoin
 main: me.espryth.easyjoin.plugin.EasyJoin
-version: 2.2.0
+version: 2.2.1
 api-version: 1.13
 author: Espryth
 depend: [PlaceholderAPI]

@@ -5,7 +5,7 @@
 #   - '[JSON_MESSAGE] {"text":"Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}}'
 #   - '[TITLE] Title;Subtitle;FadeIn;FadeShow;FadeOut'
 #   - '[BROADCAST_TITLE] Title;Subtitle;FadeIn;FadeShow;FadeOut'
-#   - '[ACTIONBAR] Message'
+#   - '[ACTIONBAR] Message;FadeShow'
 #   - '[BROADCAST_ACTIONBAR] Message;FadeShow'
 #   - '[SOUND] Sound;pitch;volume'
 #   - '[BROADCAST_SOUND] Sound;pitch;volume' # https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Sound.html
@@ -16,6 +16,9 @@
 #   - '[FIREWORK] Type;amount;power;255,0,255;255,0,255;255,0,255;255,0,255' #You can customize the firework with RGB values (R,G,B), the first RGB color is a firework color and the second is a fade!
 #   - '[DELAY] 10' #Add delay between actions (the delay is in seconds)
 #
+# First join modes (VANILLA, MYSQL)
+# If first join mode is MySQL you need to configure your credentials in credentials.yml
+FirstJoinMode: VANILLA
 # Active AuthMe to send the actions after login/register
 AuthMeHook: false
 # If you are using AuthMeHook you can add authme actions.
@@ -27,15 +30,13 @@ Formats:
   admin:
     priority: 10
     join:
-#     Execute join actions before x ticks, if it don't exist the default value is 0 so you will haven't delay
-#     delay: 10
       actions:
 #     Add centered messages adding <c> at the start of the message.
 #     [BROADCAST] <c>Centered message!
 #     [JSON_BROADCAST] <c>{"text":"A centered json message!"}
         - '[BROADCAST] &8(&a+&8) &c&lADMIN &f%player_name%'
         - '[SOUND] LEVEL_UP;10;5'
-        - '[ACTIONBAR] &ashop.example.com'
+        - '[ACTIONBAR] &ashop.example.com;5'
         - '[JSON_MESSAGE] {"text":"&9Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}'
 #   authme:
 #    actions:
