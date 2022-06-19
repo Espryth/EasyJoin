@@ -81,3 +81,15 @@ EasyJoin.iml
 .idea/discord.xml
 .idea/libraries/Maven__com_zaxxer_HikariCP_4_0_3.xml
 .idea/libraries/Maven__org_slf4j_slf4j_api_2_0_0_alpha1.xml
+plugin/easyjoin-plugin.iml
+easyjoin-parent.iml
+adapt/newer/easyjoin-adapt-newer.iml
+adapt/legacy/v1_9_R2/easyjoin-adapt-legacy-v1_9_R2.iml
+adapt/legacy/v1_8_R3/easyjoin-adapt-legacy-v1_8_R3.iml
+adapt/legacy/v1_12_R1/easyjoin-adapt-legacy-v1_12_R1.iml
+adapt/legacy/v1_11_R1/easyjoin-adapt-legacy-v1_11_R1.iml
+adapt/legacy/v1_10_R1/easyjoin-adapt-legacy-v1_10_R1.iml
+adapt/legacy/easyjoin-adapt-legacy.iml
+adapt/easyjoin-adapt.iml
+adapt/api/easyjoin-adapt-api.iml
+.idea/vcs.xml
