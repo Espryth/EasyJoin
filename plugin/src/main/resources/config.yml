@@ -19,8 +19,9 @@
 # First join modes (VANILLA, MYSQL)
 # If first join mode is MySQL you need to configure your credentials in credentials.yml
 FirstJoinMode: VANILLA
-# Active AuthMe to send the actions after login/register
-AuthMeHook: false
+# Hook types (AuthMe, nLogin)
+# Send the actions after login/register
+Hook: ""
 # If you are using AuthMeHook you can add authme actions.
 #  authme:
 #    actions:

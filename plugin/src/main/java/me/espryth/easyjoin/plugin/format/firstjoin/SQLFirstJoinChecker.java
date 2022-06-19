@@ -13,7 +13,7 @@ public class SQLFirstJoinChecker
   implements FirstJoinChecker {
 
   private static final String QUERY = "uuid VARCHAR(36)";
-  private static final String TABLE_NAME = "EJFirstJoin";
+  public static final String TABLE_NAME = "EJFirstJoin";
 
   private final SQLSource source;
 
@@ -36,7 +36,6 @@ public class SQLFirstJoinChecker
   }
 
   public void updateFirstJoin(Player player) {
-    System.out.println("UPDATINNG");
     CompletableFuture.runAsync(() -> {
       try (Connection connection = source.getConnection();
            PreparedStatement statement = connection.prepareStatement("INSERT INTO "+TABLE_NAME+" VALUE (?)");

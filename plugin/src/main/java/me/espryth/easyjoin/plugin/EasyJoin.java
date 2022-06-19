@@ -5,6 +5,7 @@ import dev.henko.storance.ModuleInjector;
 import dev.henko.storance.impl.ModuleInjectorImpl;
 import me.espryth.easyjoin.plugin.command.MainCommand;
 import me.espryth.easyjoin.plugin.format.Format;
+import me.espryth.easyjoin.plugin.hook.PlaceholderAPIHook;
 import me.espryth.easyjoin.plugin.loader.FormatLoader;
 import me.espryth.easyjoin.plugin.loader.ListenerLoader;
 import me.espryth.easyjoin.plugin.loader.Loader;
@@ -32,6 +33,9 @@ public class EasyJoin extends JavaPlugin {
         INJECTOR.install(new MainModule(this));
         listenerLoader = new ListenerLoader();
         formatLoader = new FormatLoader();
+
+        new PlaceholderAPIHook().register();
+
     }
 
     @Override

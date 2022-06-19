@@ -24,6 +24,7 @@ public class FirstJoinCheckerModule implements StoranceModule {
     FirstJoinChecker checker;
     if(mode.equalsIgnoreCase("MYSQL")) {
       SQLSource source = new SQLSource(credentials.getConfigurationSection("credentials"));
+      binder.bind(SQLSource.class).toInstance(source);
       checker = new SQLFirstJoinChecker(source);
     } else {
       checker = new VanillaFirstJoinChecker();

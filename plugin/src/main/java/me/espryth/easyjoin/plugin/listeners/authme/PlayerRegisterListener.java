@@ -1,8 +1,8 @@
 package me.espryth.easyjoin.plugin.listeners.authme;
 
-import fr.xephi.authme.events.RegisterEvent;
 import me.espryth.easyjoin.plugin.EasyJoin;
 import me.espryth.easyjoin.plugin.action.ActionType;
+import me.espryth.easyjoin.plugin.event.PlayerRegisterEvent;
 import me.espryth.easyjoin.plugin.format.Format;
 import me.espryth.easyjoin.plugin.format.FormatExecutor;
 import org.bukkit.entity.Player;
@@ -15,21 +15,19 @@ import java.util.stream.Collectors;
 
 import static me.espryth.easyjoin.plugin.EasyJoin.CONTAINER;
 
-public class RegisterListener implements Listener {
+public class PlayerRegisterListener implements Listener {
 
     private final FormatExecutor formatExecutor;
     private final Map<String, Format> formatMap;
 
-    public RegisterListener() {
+    public PlayerRegisterListener() {
         formatExecutor = CONTAINER.get(FormatExecutor.class);
         formatMap = CONTAINER.get(EasyJoin.class).getFormatMap();
     }
 
     @EventHandler
-    public void onRegister(RegisterEvent event) {
+    public void onRegister(PlayerRegisterEvent event) {
         Player player = event.getPlayer();
-
-        if(player.hasPlayedBefore()) return;
 
         Collection<Format> registerFormats = formatMap.values()
                 .stream()

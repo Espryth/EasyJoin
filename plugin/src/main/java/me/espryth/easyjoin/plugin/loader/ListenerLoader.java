@@ -1,13 +1,14 @@
 package me.espryth.easyjoin.plugin.loader;
 
+import me.espryth.easyjoin.plugin.hook.AuthMeHook;
+import me.espryth.easyjoin.plugin.hook.nLoginHook;
 import me.espryth.easyjoin.plugin.listeners.PlayerFirstJoinListener;
 import me.espryth.easyjoin.plugin.listeners.PlayerJoinListener;
 import me.espryth.easyjoin.plugin.listeners.PlayerQuitListener;
-import me.espryth.easyjoin.plugin.listeners.authme.LoginListener;
-import me.espryth.easyjoin.plugin.listeners.authme.RegisterListener;
+import me.espryth.easyjoin.plugin.listeners.authme.PlayerLoginListener;
+import me.espryth.easyjoin.plugin.listeners.authme.PlayerRegisterListener;
 import me.espryth.easyjoin.plugin.utils.YamlFile;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
@@ -31,10 +32,17 @@ public class ListenerLoader implements Loader {
         pm.registerEvents(new PlayerFirstJoinListener(), plugin);
         pm.registerEvents(new PlayerQuitListener(), plugin);
 
-        if(configFile.getBoolean("AuthMeHook")) {
-            pm.registerEvents(new LoginListener(), plugin);
-            pm.registerEvents(new RegisterListener(), plugin);
+        String hook = configFile.getString("Hook", "");
+
+        if(hook.equalsIgnoreCase("AuthMe")) {
+            pm.registerEvents(new AuthMeHook(), plugin);
+        } else if (hook.equalsIgnoreCase("nLogin")){
+            pm.registerEvents(new nLoginHook(), plugin);
         }
+
+        pm.registerEvents(new PlayerLoginListener(), plugin);
+        pm.registerEvents(new PlayerRegisterListener(), plugin);
+
     }
 
 }
