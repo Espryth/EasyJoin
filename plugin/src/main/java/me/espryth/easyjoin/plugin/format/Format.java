@@ -12,7 +12,7 @@ public class Format {
     private final int priority;
     private final List<Action> joinActions;
     private final List<Action> quitActions;
-    private final List<Action> authMeActions;
+    private final List<Action> authActions;
     private final boolean firstJoinFormat;
 
     public Format(String identifier,
@@ -22,7 +22,7 @@ public class Format {
         this.priority = priority;
         this.joinActions = new ArrayList<>();
         this.quitActions = new ArrayList<>();
-        this.authMeActions = new ArrayList<>();
+        this.authActions = new ArrayList<>();
         this.firstJoinFormat = firstJoinFormat;
     }
 
@@ -37,8 +37,8 @@ public class Format {
 
     public List<Action> getActions(ActionType actionType) {
         switch (actionType) {
-            case AUTHME:
-                return authMeActions;
+            case AUTH:
+                return authActions;
             case JOIN:
                 return joinActions;
             case QUIT:
@@ -55,8 +55,8 @@ public class Format {
         return quitActions;
     }
 
-    public List<Action> getAuthMeActions() {
-        return authMeActions;
+    public List<Action> getAuthActions() {
+        return authActions;
     }
 
     public boolean isFirstJoinFormat() {

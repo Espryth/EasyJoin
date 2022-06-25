@@ -1,7 +1,7 @@
 package me.espryth.easyjoin.plugin.action;
 
 public enum ActionType {
-    AUTHME,
+    AUTH,
     JOIN,
     QUIT
 }

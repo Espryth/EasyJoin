@@ -36,6 +36,6 @@ public class PlayerLoginListener implements Listener {
 
         if(loginFormats.isEmpty()) return;
 
-        formatExecutor.executeFormat(player, loginFormats, ActionType.AUTHME);
+        formatExecutor.executeFormat(player, loginFormats, ActionType.AUTH);
     }
 }

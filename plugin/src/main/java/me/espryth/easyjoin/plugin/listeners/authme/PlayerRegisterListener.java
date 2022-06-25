@@ -36,6 +36,6 @@ public class PlayerRegisterListener implements Listener {
 
         if(registerFormats.isEmpty()) return;
 
-        formatExecutor.executeFormat(player, registerFormats, ActionType.AUTHME);
+        formatExecutor.executeFormat(player, registerFormats, ActionType.AUTH);
     }
 }

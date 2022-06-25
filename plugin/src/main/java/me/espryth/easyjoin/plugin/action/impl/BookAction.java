@@ -24,7 +24,15 @@ public class BookAction extends AbstractAction {
     }
 
     @Override
-    public void execute(Player player, ActionQueue queue) throws ActionExecutionException{
+    public void execute(Player player, ActionQueue queue) throws ActionExecutionException {
+
+        String[] args = getLine().split(":");
+
+        if(args.length < 2) {
+            throw new ActionExecutionException("Incorrect size of arguments for book action");
+        }
+
+        YamlFile
 
         if(!bookFile.contains("book")) {
             throw new ActionExecutionException("Book isn't defined! use /ej setbook");
@@ -33,7 +41,7 @@ public class BookAction extends AbstractAction {
         int delay;
 
         try {
-            delay = Integer.parseInt(getLine());
+            delay = Integer.parseInt(args[1]);
         } catch (NumberFormatException e) {
             throw new ActionExecutionException(getLine() + " isn't a number!");
         }

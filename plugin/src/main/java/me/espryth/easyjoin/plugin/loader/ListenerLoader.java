@@ -12,6 +12,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 
+import java.util.logging.Level;
+
 import static me.espryth.easyjoin.plugin.EasyJoin.CONTAINER;
 
 public class ListenerLoader implements Loader {
@@ -34,10 +36,12 @@ public class ListenerLoader implements Loader {
 
         String hook = configFile.getString("Hook", "");
 
-        if(hook.equalsIgnoreCase("AuthMe")) {
+        if (Bukkit.getPluginManager().getPlugin("AuthMe") != null) {
             pm.registerEvents(new AuthMeHook(), plugin);
-        } else if (hook.equalsIgnoreCase("nLogin")){
+            plugin.getLogger().log(Level.INFO, "Successfully hooked with AuthMe");
+        } else if(Bukkit.getPluginManager().getPlugin("nLogin") != null) {
             pm.registerEvents(new nLoginHook(), plugin);
+            plugin.getLogger().log(Level.INFO, "Successfully hooked with nLogin");
         }
 
         pm.registerEvents(new PlayerLoginListener(), plugin);

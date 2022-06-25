@@ -37,7 +37,7 @@ public class FormatLoader implements Loader {
 
             Format format = new Format(key, priority, isFirstJoinFormat);
 
-            loadActions(format, key, ActionType.AUTHME);
+            loadActions(format, key, ActionType.AUTH);
             loadActions(format, key, ActionType.JOIN);
             loadActions(format, key, ActionType.QUIT);
 
@@ -69,8 +69,8 @@ public class FormatLoader implements Loader {
             action.setLine(line);
 
             switch (type) {
-                case AUTHME:
-                    format.getAuthMeActions().add(action);
+                case AUTH:
+                    format.getAuthActions().add(action);
                     break;
                 case JOIN:
                     format.getJoinActions().add(action);

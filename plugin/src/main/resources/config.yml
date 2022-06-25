@@ -19,13 +19,7 @@
 # First join modes (VANILLA, MYSQL)
 # If first join mode is MySQL you need to configure your credentials in credentials.yml
 FirstJoinMode: VANILLA
-# Hook types (AuthMe, nLogin)
-# Send the actions after login/register
-Hook: ""
-# If you are using AuthMeHook you can add authme actions.
-#  authme:
-#    actions:
-#      - '[BROADCAST] This is a authme action!'
+
 Formats:
 # permission: easyjoin.admin
   admin:
@@ -39,9 +33,10 @@ Formats:
         - '[SOUND] LEVEL_UP;10;5'
         - '[ACTIONBAR] &ashop.example.com;5'
         - '[JSON_MESSAGE] {"text":"&9Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}'
-#   authme:
-#    actions:
-#      - '[BROADCAST] This is a authme action!'
+#    If you are using auth plugin you can add auth actions. (only with AuthMe and nLogin)
+#    auth:
+#     actions:
+#       - '[BROADCAST] This is a auth action!'
     quit:
       actions:
         - '[BROADCAST] &8(&c-&8) &f%player_name%'
