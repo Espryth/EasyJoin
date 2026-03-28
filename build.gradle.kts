@@ -56,14 +56,12 @@ dependencies {
 
     api("org.incendo:cloud-paper:2.0.0-beta.10")
     api("org.incendo:cloud-annotations:2.0.0")
+    
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.5.2")
-
-    api("org.jdbi:jdbi3-core:3.45.4")
-    api("org.jdbi:jdbi3-sqlobject:3.45.4")
-    api("com.zaxxer:HikariCP:6.2.1")
-    //implementation("net.kyori:adventure-text-serializer-legacy:4.26.1")
-    //implementation("net.kyori:adventure-text-minimessage:4.26.1")
+    compileOnlyApi("org.jdbi:jdbi3-core:3.45.4")
+    compileOnlyApi("org.jdbi:jdbi3-sqlobject:3.45.4")
+    compileOnlyApi("com.zaxxer:HikariCP:6.2.1")
 }
 
 
