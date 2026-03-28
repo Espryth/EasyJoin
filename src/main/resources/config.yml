@@ -1,0 +1,156 @@
+# ============================================================
+#                      EASYJOIN CONFIGURATION
+# ============================================================
+
+# First Join Detection Mode
+# VANILLA - Uses Bukkit's hasPlayedBefore() method (simple, no database needed)
+# MYSQL   - Uses MySQL database for cross-server first join detection (BungeeCord/Velocity networks)
+FirstJoinMode: VANILLA
+
+# ============================================================
+#                    AVAILABLE ACTIONS
+# ============================================================
+#
+# MESSAGE ACTIONS:
+#   [MESSAGE] <text>
+#     Sends a message to the player
+#     Use <c> at the start to center the message
+#     Example: [MESSAGE] &aWelcome to the server!
+#     Example: [MESSAGE] <c>&6Centered Message
+#
+#   [BROADCAST] <text>
+#     Sends a message to all online players
+#     Use <c> at the start to center the message
+#     Example: [BROADCAST] &e%player_name% joined!
+#
+#   [JSON_MESSAGE] <json>
+#     Sends a JSON message to the player (clickable, hoverable)
+#     Example: [JSON_MESSAGE] {"text":"Click me","clickEvent":{"action":"open_url","value":"https://example.com"}}
+#
+#   [JSON_BROADCAST] <json>
+#     Sends a JSON message to all online players
+#
+#   [ACTIONBAR] <text>
+#     Shows a message in the player's action bar
+#     Example: [ACTIONBAR] &aWelcome back!
+#
+#   [BROADCAST_ACTIONBAR] <text>
+#     Shows a message in all players' action bars
+#
+# TITLE ACTIONS:
+#   [TITLE] <title>;<subtitle>;<fadeIn>;<stay>;<fadeOut>
+#     Shows a title to the player
+#     Times are in ticks (20 ticks = 1 second)
+#     Example: [TITLE] &6Welcome;&eEnjoy your stay!;10;70;20
+#
+#   [BROADCAST_TITLE] <title>;<subtitle>;<fadeIn>;<stay>;<fadeOut>
+#     Shows a title to all online players
+#
+# AVATAR ACTIONS:
+#   [AVATAR_MESSAGE] <line1><nl><line2><nl>...
+#     Sends a message with the player's Minecraft skin avatar
+#     Use <nl> to separate lines (up to 8 lines)
+#     Example: [AVATAR_MESSAGE] &aWelcome<nl>&7%player_name%
+#
+#   [AVATAR_BROADCAST] <line1><nl><line2><nl>...
+#     Broadcasts a message with the player's avatar to all players
+#
+# SOUND ACTIONS:
+#   [SOUND] <sound>;<volume>;<pitch>
+#     Plays a sound to the player
+#     Sound names: https://jd.papermc.io/paper/1.21.11/org/bukkit/Sound.html
+#     Example: [SOUND] ENTITY_PLAYER_LEVELUP;1;1
+#
+#   [BROADCAST_SOUND] <sound>;<volume>;<pitch>
+#     Plays a sound to all online players
+#
+# FIREWORK ACTION:
+#   [FIREWORK] <type>;<amount>;<power>;<r,g,b>;<r,g,b>;...
+#     Spawns fireworks at the player's location
+#     Types: BALL, BALL_LARGE, BURST, CREEPER, STAR
+#     Colors are in RGB format (0-255)
+#     Example: [FIREWORK] STAR;3;2;255,215,0;255,140,0
+#
+# COMMAND ACTIONS:
+#   [CONSOLE] <command>
+#     Executes a command as console
+#     Example: [CONSOLE] give %player_name% diamond 1
+#
+#   [PLAYER] <command>
+#     Makes the player execute a command
+#     Example: [PLAYER] spawn
+#
+# UTILITY ACTIONS:
+#   [CLEARCHAT] <lines>
+#     Clears the player's chat by sending empty lines
+#     Example: [CLEARCHAT] 100
+#
+#   [DELAY] <seconds>
+#     Pauses execution for specified seconds before next action
+#     Example: [DELAY] 3
+#
+# ============================================================
+#                      PLACEHOLDERS
+# ============================================================
+# All actions support PlaceholderAPI placeholders
+# Common placeholders:
+#   %player_name%     - Player's name
+#   %player_uuid%     - Player's UUID
+#   %player_health%   - Player's health
+#   %server_online%   - Online player count
+#   %server_max_players% - Max player count
+#
+# Full list: https://wiki.placeholderapi.com/users/placeholder-list/
+# ============================================================
+#                         FORMATS
+# ============================================================
+# Formats define what happens when a player joins/quits
+#
+# Format Properties:
+#   priority         - Higher priority formats are selected first (integer)
+#   isFirstJoinFormat - If true, only triggers for first-time players (boolean)
+#   join             - Actions executed when player joins
+#   quit             - Actions executed when player quits
+#
+# Permission: easyjoin.<format_id> (e.g., easyjoin.admin)
+# Players without any format permission will use the "default" format
+# ============================================================
+
+Formats:
+  admin:
+    priority: 10
+    isFirstJoinFormat: false
+    join:
+      actions:
+        - '[BROADCAST] &8(&a+&8) &c&lADMIN &f%player_name%'
+        - '[SOUND] ENTITY_PLAYER_LEVELUP;1;1'
+        - '[ACTIONBAR] &ashop.example.com'
+        - '[JSON_MESSAGE] {"text":"&9Click to go to our discord","clickEvent":{"action":"open_url","value":"https://discord.gg/hPNYUMUauD"}}'
+    quit:
+      actions:
+        - '[BROADCAST] &8(&c-&8) &f%player_name%'
+
+  default:
+    priority: 5
+    isFirstJoinFormat: false
+    join:
+      actions:
+        - '<DELAY> 5'
+        - '[BROADCAST] &8(&a+&8) &f%player_name%'
+        - '[AVATAR_MESSAGE] &aWelcome to the server!<nl>&7%player_name%<nl>&bEnjoy your stay!'
+        - '[SOUND] ENTITY_PLAYER_LEVELUP;1;1'
+        - '[ACTIONBAR] &ashop.example.com'
+    quit:
+      actions:
+        - '[BROADCAST] &8(&c-&8) &f%player_name%'
+
+  firstjoin:
+    priority: 15
+    isFirstJoinFormat: true
+    join:
+      actions:
+        - '[BROADCAST] &e&lWELCOME &f%player_name% &e&lto the server!'
+        - '[SOUND] ENTITY_PLAYER_LEVELUP;1;1'
+        - '[FIREWORK] STAR;3;2;255,215,0;255,140,0'
+    quit:
+      actions: []

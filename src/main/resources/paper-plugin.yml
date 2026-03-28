@@ -1,0 +1,15 @@
+api-version: '1.21'
+name: EasyJoin
+version: ${project.version}
+main: me.espryth.easyjoin.EasyJoinPlugin
+authors: [Espryth, Mapacheee]
+folia-supported: true
+package-state: internal
+dependencies:
+  server:
+    PlaceholderAPI:
+      load: AFTER
+      required: false
+    SkinsRestorer:
+      load: AFTER
+      required: false
