@@ -29,39 +29,22 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 
-    api("com.thewinterframework:paper:1.0.4") {
-        exclude(group = "io.papermc.paper", module = "paper-api")
-        exclude(group = "com.google.guava", module = "guava")
-        exclude(group = "com.google.code.gson", module = "gson")
-    }
-    annotationProcessor("com.thewinterframework:paper:1.0.4")
-
-    api("com.thewinterframework:configuration:1.0.2") {
-        exclude(group = "io.papermc.paper", module = "paper-api")
-        exclude(group = "org.spongepowered", module = "configurate-core")
-        exclude(group = "org.spongepowered", module = "configurate-hocon")
-    }
-    annotationProcessor("com.thewinterframework:configuration:1.0.2")
-
-    api("org.spongepowered:configurate-core:4.2.0")
-    api("org.spongepowered:configurate-hocon:4.2.0")
-    api("com.thewinterframework:command:1.0.1") {
-        exclude(group = "io.papermc.paper", module = "paper-api")
-        exclude(group = "org.incendo", module = "cloud-paper")
-        exclude(group = "org.incendo", module = "cloud-annotations")
-        exclude(group = "org.incendo", module = "cloud-bukkit")
-        exclude(group = "org.incendo", module = "cloud-core")
-    }
+    api("com.thewinterframework:paper:1.0.6")
+    annotationProcessor("com.thewinterframework:paper:1.0.6")
+    api("com.thewinterframework:configuration:1.0.4")
+    annotationProcessor("com.thewinterframework:configuration:1.0.4")
+    api("com.thewinterframework:command:1.0.1")
     annotationProcessor("com.thewinterframework:command:1.0.1")
 
-    api("org.incendo:cloud-paper:2.0.0-beta.10")
+    api("org.incendo:cloud-paper:2.0.0-beta.15")
     api("org.incendo:cloud-annotations:2.0.0")
+    api("org.spongepowered:configurate-yaml:4.2.0")
     
-    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("me.clip:placeholderapi:2.12.2")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.5.2")
-    compileOnlyApi("org.jdbi:jdbi3-core:3.45.4")
-    compileOnlyApi("org.jdbi:jdbi3-sqlobject:3.45.4")
-    compileOnlyApi("com.zaxxer:HikariCP:6.2.1")
+    api("org.jdbi:jdbi3-core:3.45.4")
+    api("org.jdbi:jdbi3-sqlobject:3.45.4")
+    api("com.zaxxer:HikariCP:6.2.1")
 }
 
 
@@ -71,8 +54,8 @@ tasks.shadowJar {
         exclude(dependency("com.google.inject:.*"))
         exclude(dependency("org.incendo:.*"))
         exclude(dependency("org.spongepowered:.*"))
-        exclude(dependency("org.jdbi:.*"))
-        exclude(dependency("com.zaxxer:.*"))
+        //exclude(dependency("org.jdbi:.*"))
+        //exclude(dependency("com.zaxxer:.*"))
     }
 
     relocate("com.thewinterframework", "me.espryth.easyjoin.libs.winter")
