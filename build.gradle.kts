@@ -29,16 +29,8 @@ repositories {
 dependencies {
     compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
 
-    api("com.thewinterframework:paper:1.0.6")
-    annotationProcessor("com.thewinterframework:paper:1.0.6")
-    api("com.thewinterframework:configuration:1.0.4")
-    annotationProcessor("com.thewinterframework:configuration:1.0.4")
-    api("com.thewinterframework:command:1.0.1")
-    annotationProcessor("com.thewinterframework:command:1.0.1")
-
-    api("org.incendo:cloud-paper:2.0.0-beta.15")
-    api("org.incendo:cloud-annotations:2.0.0")
-    api("org.spongepowered:configurate-yaml:4.2.0")
+    compileOnlyApi("me.mapacheee:MapacheeeLib:1.0.0")
+    annotationProcessor("me.mapacheee:MapacheeeLib:1.0.0")
     
     compileOnly("me.clip:placeholderapi:2.12.2")
     compileOnly("net.skinsrestorer:skinsrestorer-api:15.5.2")
@@ -49,45 +41,6 @@ dependencies {
 
 
 tasks.shadowJar {
-    minimize {
-        exclude(dependency("com.thewinterframework:.*"))
-        exclude(dependency("com.google.inject:.*"))
-        exclude(dependency("org.incendo:.*"))
-        exclude(dependency("org.spongepowered:.*"))
-        //exclude(dependency("org.jdbi:.*"))
-        //exclude(dependency("com.zaxxer:.*"))
-    }
-
-    relocate("com.thewinterframework", "me.espryth.easyjoin.libs.winter")
-    relocate("com.google.inject", "me.espryth.easyjoin.libs.guice")
-    relocate("org.incendo.cloud", "me.espryth.easyjoin.libs.cloud")
-    relocate("javax.inject", "me.espryth.easyjoin.libs.inject")
-    relocate("aopalliance", "me.espryth.easyjoin.libs.aopalliance")
-    relocate("io.leangen.geantyref", "me.espryth.easyjoin.libs.geantyref")
-    relocate("org.spongepowered.configurate", "me.espryth.easyjoin.libs.configurate")
-    relocate("org.jdbi", "me.espryth.easyjoin.libs.jdbi")
-    relocate("com.zaxxer.hikari", "me.espryth.easyjoin.libs.hikari")
-
-    exclude("org/checkerframework/**")
-    exclude("META-INF/maven/org.checkerframework/**")
-    exclude("com/google/errorprone/**")
-    exclude("com/google/j2objc/**")
-
-    exclude("META-INF/MANIFEST.MF")
-    exclude("META-INF/*.SF")
-    exclude("META-INF/*.DSA")
-    exclude("META-INF/*.RSA")
-    exclude("META-INF/versions/**")
-    exclude("META-INF/maven/**")
-    exclude("META-INF/proguard/**")
-    exclude("META-INF/native-image/**")
-    exclude("module-info.class")
-    exclude("**/module-info.class")
-    exclude("META-INF/*.kotlin_module")
-
-    archiveClassifier.set("")
-
-    mergeServiceFiles()
 
     manifest {
         attributes(

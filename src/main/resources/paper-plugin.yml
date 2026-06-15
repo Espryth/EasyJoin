@@ -7,6 +7,9 @@ folia-supported: true
 package-state: internal
 dependencies:
   server:
+    MapacheeeLib:
+      load: BEFORE
+      required: true
     PlaceholderAPI:
       load: AFTER
       required: false
