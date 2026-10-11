@@ -1,0 +1,32 @@
+[versions]
+# Core & Platform
+mapacheeelib = "1.0.2"
+paper-api = "1.21.11-R0.1-SNAPSHOT"
+
+# Hooks
+placeholderapi = "2.12.2"
+skinsrestorer = "15.5.2"
+
+# Database
+jdbi = "3.45.4"
+hikaricp = "6.2.1"
+
+# Plugins
+shadow = "9.3.0"
+
+[libraries]
+# Core & Platform
+mapacheeelib = { module = "me.mapacheee:MapacheeeLib", version.ref = "mapacheeelib" }
+paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
+
+# Hooks
+placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }
+skinsrestorer-api = { module = "net.skinsrestorer:skinsrestorer-api", version.ref = "skinsrestorer" }
+
+# Database
+jdbi-core = { module = "org.jdbi:jdbi3-core", version.ref = "jdbi" }
+jdbi-sqlobject = { module = "org.jdbi:jdbi3-sqlobject", version.ref = "jdbi" }
+hikaricp = { module = "com.zaxxer:HikariCP", version.ref = "hikaricp" }
+
+[plugins]
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }

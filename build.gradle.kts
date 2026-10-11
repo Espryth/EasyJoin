@@ -1,59 +1,85 @@
+import org.gradle.api.tasks.compile.JavaCompile
+
 plugins {
-    id("java")
-    id("java-library")
-    id("com.gradleup.shadow") version "9.3.0"
+    java
+    `java-library`
+    alias(libs.plugins.shadow)
 }
 
-group = "me.espryth.easyjoin"
-version = "3.0.0"
+description = "EasyJoin - Customizable join and quit actions plugin"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
-    sourceCompatibility = JavaVersion.VERSION_21
-    targetCompatibility = JavaVersion.VERSION_21
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
+    mavenLocal()
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/releases/")
     maven("https://maven.enginehub.org/repo/")
     maven("https://repo.codemc.io/repository/maven-public/")
+    maven("https://repo.faststats.dev/releases")
 }
-
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.4-R0.1-SNAPSHOT")
+    // Paper & Core
+    compileOnly(libs.paper.api)
+    compileOnlyApi(libs.mapacheeelib)
+    annotationProcessor(libs.mapacheeelib)
 
-    compileOnlyApi("me.mapacheee:MapacheeeLib:1.0.0")
-    annotationProcessor("me.mapacheee:MapacheeeLib:1.0.0")
-    
-    compileOnly("me.clip:placeholderapi:2.12.2")
-    compileOnly("net.skinsrestorer:skinsrestorer-api:15.5.2")
-    api("org.jdbi:jdbi3-core:3.45.4")
-    api("org.jdbi:jdbi3-sqlobject:3.45.4")
-    api("com.zaxxer:HikariCP:6.2.1")
+    // Hooks
+    compileOnly(libs.placeholderapi)
+    compileOnly(libs.skinsrestorer.api)
+
+    // Database
+    api(libs.jdbi.core)
+    api(libs.jdbi.sqlobject)
+    api(libs.hikaricp)
 }
 
+tasks.withType<JavaCompile>().configureEach {
+    options.encoding = "UTF-8"
+    options.release.set(25)
+    options.compilerArgs.add("-parameters")
+}
 
-tasks.shadowJar {
-
-    manifest {
-        attributes(
-            "Implementation-Title" to project.name,
-            "Implementation-Version" to project.version,
-            "Multi-Release" to "false"
-        )
+tasks {
+    jar {
+        archiveClassifier.set("plain")
     }
+    processResources {
+        filteringCharset = "UTF-8"
+        filesMatching(listOf("plugin.yml", "paper-plugin.yml")) {
+            expand(
+                mapOf(
+                    "version" to project.version,
+                    "description" to project.description
+                )
+            )
+        }
+    }
+    shadowJar {
+        archiveBaseName.set("EasyJoin")
+        archiveClassifier.set("")
+        archiveVersion.set(project.version.toString())
 
-    isPreserveFileTimestamps = false
-    isReproducibleFileOrder = true
-}
+        manifest {
+            attributes(
+                "Implementation-Title" to project.name,
+                "Implementation-Version" to project.version,
+                "Multi-Release" to "false"
+            )
+        }
 
-tasks.build {
-    dependsOn(tasks.shadowJar)
+        mergeServiceFiles()
+        isPreserveFileTimestamps = false
+        isReproducibleFileOrder = true
+    }
+    build {
+        dependsOn(shadowJar)
+    }
 }
