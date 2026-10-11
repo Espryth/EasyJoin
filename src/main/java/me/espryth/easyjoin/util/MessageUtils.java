@@ -4,52 +4,80 @@ import me.clip.placeholderapi.PlaceholderAPI;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Pattern;
 
 public class MessageUtils {
 
-    private final static MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
 
-    private final static Pattern HEX_COLOR_PATTERN = Pattern.compile("&\\[([\\dA-Fa-f])([\\dA-Fa-f])," +
-            "([\\dA-Fa-f])([\\dA-Fa-f])," +
-            "([\\dA-Fa-f])([\\dA-Fa-f])]");
+    private static final Pattern BRACKET_HEX_COLOR_PATTERN = Pattern.compile(
+            "&\\[([\\dA-Fa-f])([\\dA-Fa-f]),([\\dA-Fa-f])([\\dA-Fa-f]),([\\dA-Fa-f])([\\dA-Fa-f])]"
+    );
+    private static final Pattern AMPERSAND_HEX_COLOR_PATTERN = Pattern.compile(
+            "&#([\\dA-Fa-f])([\\dA-Fa-f])([\\dA-Fa-f])([\\dA-Fa-f])([\\dA-Fa-f])([\\dA-Fa-f])"
+    );
+    private static final Pattern LEGACY_AMPERSAND_CODE_PATTERN = Pattern.compile(
+            "&([0-9a-fk-orxA-FK-ORX])"
+    );
 
-    private final static String BUKKIT_HEX_COLOR = "§x§$1§$2§$3§$4§$5§$6";
+    private static final String BUKKIT_HEX_COLOR = "§x§$1§$2§$3§$4§$5§$6";
 
-    private final static int CENTER_PX = 154;
+    private static final int CENTER_PX = 154;
+
+    public static String parsePlaceholders(Player player, String text) {
+        if (text == null || text.isEmpty() || player == null) {
+            return text == null ? "" : text;
+        }
+        try {
+            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                return applyPlaceholderApi(player, text);
+            }
+        } catch (Throwable ignored) {
+        }
+        return text;
+    }
+
+    private static String applyPlaceholderApi(Player player, String text) {
+        return PlaceholderAPI.setPlaceholders(player, text);
+    }
+
+    private static String replaceCustomHex(String text) {
+        String result = BRACKET_HEX_COLOR_PATTERN.matcher(text).replaceAll(BUKKIT_HEX_COLOR);
+        return AMPERSAND_HEX_COLOR_PATTERN.matcher(result).replaceAll(BUKKIT_HEX_COLOR);
+    }
 
     public static String colorize(String text) {
-        if (text == null)
+        if (text == null || text.isEmpty()) {
             return "";
-        String newText = HEX_COLOR_PATTERN.matcher(text).replaceAll(BUKKIT_HEX_COLOR);
-        if (newText.indexOf('§') >= 0) {
-            return newText;
+        }
+        String newText = replaceCustomHex(text);
+        if (newText.indexOf('§') >= 0 || LEGACY_AMPERSAND_CODE_PATTERN.matcher(newText).find()) {
+            String normalized = LEGACY_AMPERSAND_CODE_PATTERN.matcher(newText).replaceAll("§$1");
+            return LegacyComponentSerializer.legacySection().serialize(
+                    LegacyComponentSerializer.legacySection().deserialize(normalized)
+            );
         }
         Component component = MINI_MESSAGE.deserialize(newText);
-        if (component.equals(Component.text(newText))) {
-            component = LegacyComponentSerializer.legacyAmpersand().deserialize(newText);
-        }
         return LegacyComponentSerializer.legacySection().serialize(component);
     }
 
     public static Component colorizeToComponent(String text) {
-        if (text == null)
+        if (text == null || text.isEmpty()) {
             return Component.empty();
-        String newText = HEX_COLOR_PATTERN.matcher(text).replaceAll(BUKKIT_HEX_COLOR);
-        if (newText.indexOf('§') >= 0) {
-            return LegacyComponentSerializer.legacySection().deserialize(newText);
         }
-        Component component = MINI_MESSAGE.deserialize(newText);
-        if (component.equals(Component.text(newText))) {
-            return LegacyComponentSerializer.legacyAmpersand().deserialize(newText);
+        String newText = replaceCustomHex(text);
+        if (newText.indexOf('§') >= 0 || LEGACY_AMPERSAND_CODE_PATTERN.matcher(newText).find()) {
+            String normalized = LEGACY_AMPERSAND_CODE_PATTERN.matcher(newText).replaceAll("§$1");
+            return LegacyComponentSerializer.legacySection().deserialize(normalized);
         }
-        return component;
+        return MINI_MESSAGE.deserialize(newText);
     }
 
     public static String formatString(Player player, String s) {
-        return PlaceholderAPI.setPlaceholders(player, colorize(s));
+        return colorize(parsePlaceholders(player, s));
     }
 
     public static String getCenteredMessage(String message) {
@@ -59,7 +87,7 @@ public class MessageUtils {
     /**
      * Centers a message accounting for content already occupying the left side
      * (e.g. an avatar).
-     * 
+     *
      * @param message  the text to center (with legacy § codes already applied)
      * @param offsetPx pixels already consumed on the left (avatar width +
      *                 separator)
@@ -90,8 +118,9 @@ public class MessageUtils {
     }
 
     private static String getCenteredSpace(String message, int centerPx) {
-        if (message == null || message.isEmpty())
+        if (message == null || message.isEmpty()) {
             return "";
+        }
 
         int messagePxSize = 0;
         boolean previousCode = false;
@@ -102,7 +131,15 @@ public class MessageUtils {
                 previousCode = true;
             } else if (previousCode) {
                 previousCode = false;
-                isBold = (c == 'l' || c == 'L');
+                char lower = Character.toLowerCase(c);
+                if (lower == 'l') {
+                    isBold = true;
+                } else if ((lower >= '0' && lower <= '9')
+                        || (lower >= 'a' && lower <= 'f')
+                        || lower == 'r'
+                        || lower == 'x') {
+                    isBold = false;
+                }
             } else {
                 DefaultFontInfo dFI = DefaultFontInfo.getDefaultFontInfo(c);
                 messagePxSize += isBold ? dFI.getBoldLength() : dFI.getLength();
@@ -116,7 +153,7 @@ public class MessageUtils {
         int compensated = 0;
         StringBuilder sb = new StringBuilder();
         while (compensated < toCompensate) {
-            sb.append(" ");
+            sb.append(' ');
             compensated += spaceLength;
         }
         return sb.toString();

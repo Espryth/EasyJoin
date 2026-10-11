@@ -2,12 +2,16 @@ package me.espryth.easyjoin.util;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import net.skinsrestorer.api.PropertyUtils;
 import net.skinsrestorer.api.SkinsRestorer;
 import net.skinsrestorer.api.SkinsRestorerProvider;
+import net.skinsrestorer.api.property.SkinProperty;
 import net.skinsrestorer.api.storage.PlayerStorage;
-import net.skinsrestorer.api.PropertyUtils;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.imageio.ImageIO;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -17,38 +21,79 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URL;
-import net.skinsrestorer.api.property.SkinProperty;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class AvatarUtils {
 
-    private static final Logger LOGGER = Logger.getLogger("EasyJoin");
+    private static final Logger LOGGER = LoggerFactory.getLogger(AvatarUtils.class);
     private static final int CONNECT_TIMEOUT_MS = 3000;
     private static final int READ_TIMEOUT_MS = 3000;
     private static final long CACHE_TTL_MS = 10 * 60 * 1000L; // 10 minutes
+    private static final long PLACEHOLDER_TTL_MS = 30 * 1000L; // 30 seconds
     private static final Map<UUID, CachedAvatar> AVATAR_CACHE = new ConcurrentHashMap<>();
+    private static final Map<UUID, CompletableFuture<List<Component>>> IN_FLIGHT = new ConcurrentHashMap<>();
+
+    /**
+     * Returns the cached 8-line avatar if present and not expired.
+     */
+    public static Optional<List<Component>> getCachedAvatar(UUID uuid) {
+        CachedAvatar cached = AVATAR_CACHE.get(uuid);
+        if (cached != null && !cached.isExpired()) {
+            return Optional.of(cached.lines());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Asynchronously resolves the 8-line avatar for the given player, using cache when available.
+     */
+    public static CompletableFuture<List<Component>> getAvatarAsync(Player player) {
+        UUID uuid = player.getUniqueId();
+        Optional<List<Component>> cached = getCachedAvatar(uuid);
+        if (cached.isPresent()) {
+            return CompletableFuture.completedFuture(cached.get());
+        }
+
+        String uuidStr = uuid.toString().replace("-", "");
+        String playerName = player.getName();
+        URL profileSkinUrl = extractProfileSkinUrl(player);
+        boolean skinsRestorerEnabled = Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer");
+
+        return IN_FLIGHT.computeIfAbsent(uuid, key ->
+                CompletableFuture.supplyAsync(() -> {
+                    try {
+                        return resolveAndCacheAvatar(uuid, uuidStr, playerName, profileSkinUrl, skinsRestorerEnabled);
+                    } finally {
+                        IN_FLIGHT.remove(uuid);
+                    }
+                })
+        );
+    }
 
     /**
      * Returns the 8-line avatar for the given player, using cache when available.
      */
     public static List<Component> getAvatar(Player player) {
         UUID uuid = player.getUniqueId();
-        String uuidStr = uuid.toString().replace("-", "");
-        String playerName = player.getName();
-
-        CachedAvatar cached = AVATAR_CACHE.get(uuid);
-        if (cached != null && !cached.isExpired()) {
-            return cached.lines();
+        Optional<List<Component>> cached = getCachedAvatar(uuid);
+        if (cached.isPresent()) {
+            return cached.get();
         }
 
-        List<Component> avatar = fetchAvatarWithFallbacks(player, uuidStr, playerName);
-        AVATAR_CACHE.put(uuid, new CachedAvatar(avatar, System.currentTimeMillis()));
+        String uuidStr = uuid.toString().replace("-", "");
+        String playerName = player.getName();
+        URL profileSkinUrl = extractProfileSkinUrl(player);
+        boolean skinsRestorerEnabled = Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer");
 
-        return avatar;
+        return resolveAndCacheAvatar(uuid, uuidStr, playerName, profileSkinUrl, skinsRestorerEnabled);
     }
 
     /**
@@ -65,47 +110,77 @@ public class AvatarUtils {
         AVATAR_CACHE.clear();
     }
 
-    private static List<Component> fetchAvatarWithFallbacks(Player player, String uuid, String playerName) {
-        BufferedImage image = fetchFromSkinsRestorer(player);
-        if (image != null) {
-            BufferedImage head = cropHeadWithOverlay(image);
-            BufferedImage small = resize(head, 8, 8);
-            return imageToComponents(small);
+    private static URL extractProfileSkinUrl(Player player) {
+        try {
+            return player.getPlayerProfile().getTextures().getSkin();
+        } catch (Throwable ignored) {
+            return null;
         }
-
-        image = fetchCrafatar(uuid, 8);
-        if (image != null) return imageToComponents(ensureSize(image, 8, 8));
-
-        image = fetchMcHeads(playerName, 8);
-        if (image != null) return imageToComponents(ensureSize(image, 8, 8));
-
-        image = fetchSkinFromMojang(uuid);
-        if (image != null) {
-            BufferedImage head = cropHeadWithOverlay(image);
-            BufferedImage small = resize(head, 8, 8);
-            return imageToComponents(small);
-        }
-
-        return generatePlaceholder(playerName, 8, 8);
     }
 
-    /**
-     * Tries to get the skin texture URL from SkinsRestorer if it is installed.
-     * This allows offline/cracked players who set a skin via SkinsRestorer to
-     * display the correct avatar.
-     *
-     * @return the full skin image, or null if SkinsRestorer is not installed
-     *         or the skin could not be retrieved
-     */
-    private static BufferedImage fetchFromSkinsRestorer(Player player) {
-        try {
-            if (!Bukkit.getPluginManager().isPluginEnabled("SkinsRestorer")) {
-                return null;
+    private static List<Component> resolveAndCacheAvatar(
+            UUID uuid,
+            String uuidStr,
+            String playerName,
+            URL profileSkinUrl,
+            boolean skinsRestorerEnabled
+    ) {
+        BufferedImage image = null;
+        if (skinsRestorerEnabled) {
+            image = fetchFromSkinsRestorer(uuid, playerName);
+            if (image != null) {
+                List<Component> result = cropAndConvert(image);
+                AVATAR_CACHE.put(uuid, new CachedAvatar(result, System.currentTimeMillis(), CACHE_TTL_MS));
+                return result;
             }
+        }
 
-            return fetchFromSkinsRestorerInternal(player);
+        if (profileSkinUrl != null) {
+            image = downloadImage(profileSkinUrl);
+            if (image != null) {
+                List<Component> result = cropAndConvert(image);
+                AVATAR_CACHE.put(uuid, new CachedAvatar(result, System.currentTimeMillis(), CACHE_TTL_MS));
+                return result;
+            }
+        }
+
+        image = fetchMcHeads(playerName, 8);
+        if (image != null) {
+            List<Component> result = imageToComponents(ensureSize(image, 8, 8));
+            AVATAR_CACHE.put(uuid, new CachedAvatar(result, System.currentTimeMillis(), CACHE_TTL_MS));
+            return result;
+        }
+
+        image = fetchSkinFromMojang(uuidStr);
+        if (image != null) {
+            List<Component> result = cropAndConvert(image);
+            AVATAR_CACHE.put(uuid, new CachedAvatar(result, System.currentTimeMillis(), CACHE_TTL_MS));
+            return result;
+        }
+
+        image = fetchCrafatar(uuidStr, 8);
+        if (image != null) {
+            List<Component> result = imageToComponents(ensureSize(image, 8, 8));
+            AVATAR_CACHE.put(uuid, new CachedAvatar(result, System.currentTimeMillis(), CACHE_TTL_MS));
+            return result;
+        }
+
+        List<Component> placeholder = generatePlaceholder(playerName, 8, 8);
+        AVATAR_CACHE.put(uuid, new CachedAvatar(placeholder, System.currentTimeMillis(), PLACEHOLDER_TTL_MS));
+        return placeholder;
+    }
+
+    private static List<Component> cropAndConvert(BufferedImage skin) {
+        BufferedImage head = cropHeadWithOverlay(skin);
+        BufferedImage small = resize(head, 8, 8);
+        return imageToComponents(small);
+    }
+
+    private static BufferedImage fetchFromSkinsRestorer(UUID uuid, String playerName) {
+        try {
+            return fetchFromSkinsRestorerInternal(uuid, playerName);
         } catch (Throwable t) {
-            LOGGER.log(Level.FINE, "SkinsRestorer integration failed", t);
+            LOGGER.debug("SkinsRestorer integration failed", t);
             return null;
         }
     }
@@ -114,22 +189,24 @@ public class AvatarUtils {
      * Internal method that actually uses SkinsRestorer API classes.
      * Separated so the outer method can catch NoClassDefFoundError safely.
      */
-    private static BufferedImage fetchFromSkinsRestorerInternal(Player player) {
+    private static BufferedImage fetchFromSkinsRestorerInternal(UUID uuid, String playerName) {
         try {
             SkinsRestorer api = SkinsRestorerProvider.get();
             PlayerStorage playerStorage = api.getPlayerStorage();
 
-            Optional<SkinProperty> propertyOpt =
-                    playerStorage.getSkinForPlayer(player.getUniqueId(), player.getName());
-
-            if (propertyOpt.isEmpty()) return null;
+            Optional<SkinProperty> propertyOpt = playerStorage.getSkinForPlayer(uuid, playerName);
+            if (propertyOpt.isEmpty()) {
+                return null;
+            }
 
             String skinUrl = PropertyUtils.getSkinTextureUrl(propertyOpt.get());
-            if (skinUrl == null || skinUrl.isBlank()) return null;
+            if (skinUrl == null || skinUrl.isBlank()) {
+                return null;
+            }
 
             return downloadImage(URI.create(skinUrl).toURL());
         } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Failed to fetch skin from SkinsRestorer for " + player.getName(), e);
+            LOGGER.debug("Failed to fetch skin from SkinsRestorer for {}", playerName, e);
             return null;
         }
     }
@@ -144,7 +221,7 @@ public class AvatarUtils {
             ).toURL();
             return downloadImage(url);
         } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Crafatar fetch failed for " + uuid, e);
+            LOGGER.debug("Crafatar fetch failed for {}", uuid, e);
             return null;
         }
     }
@@ -159,7 +236,7 @@ public class AvatarUtils {
             ).toURL();
             return downloadImage(url);
         } catch (Exception e) {
-            LOGGER.log(Level.FINE, "mc-heads fetch failed for " + playerName, e);
+            LOGGER.debug("mc-heads fetch failed for {}", playerName, e);
             return null;
         }
     }
@@ -173,20 +250,26 @@ public class AvatarUtils {
                     "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid
             ).toURL();
             String profileJson = downloadString(profileUrl);
-            if (profileJson == null) return null;
+            if (profileJson == null) {
+                return null;
+            }
 
             String textureBase64 = extractBase64Texture(profileJson);
-            if (textureBase64 == null) return null;
+            if (textureBase64 == null) {
+                return null;
+            }
 
             String textureJson = new String(
                     Base64.getDecoder().decode(textureBase64), StandardCharsets.UTF_8
             );
             String skinUrl = extractSkinUrlFromTextureJson(textureJson);
-            if (skinUrl == null) return null;
+            if (skinUrl == null) {
+                return null;
+            }
 
             return downloadImage(URI.create(skinUrl).toURL());
         } catch (Exception e) {
-            LOGGER.log(Level.FINE, "Mojang skin fetch failed for " + uuid, e);
+            LOGGER.debug("Mojang skin fetch failed for {}", uuid, e);
             return null;
         }
     }
@@ -196,14 +279,18 @@ public class AvatarUtils {
         try {
             conn = openConnection(url);
             int code = conn.getResponseCode();
-            if (code != 200) return null;
+            if (code != 200) {
+                return null;
+            }
             try (InputStream in = conn.getInputStream()) {
                 return ImageIO.read(in);
             }
         } catch (IOException e) {
             return null;
         } finally {
-            if (conn != null) conn.disconnect();
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
     }
 
@@ -212,14 +299,18 @@ public class AvatarUtils {
         try {
             conn = openConnection(url);
             int code = conn.getResponseCode();
-            if (code != 200) return null;
+            if (code != 200) {
+                return null;
+            }
             try (InputStream in = conn.getInputStream()) {
                 return new String(in.readAllBytes(), StandardCharsets.UTF_8);
             }
         } catch (IOException e) {
             return null;
         } finally {
-            if (conn != null) conn.disconnect();
+            if (conn != null) {
+                conn.disconnect();
+            }
         }
     }
 
@@ -270,25 +361,18 @@ public class AvatarUtils {
         }
     }
 
-    /**
-     * Checks if an image region is fully transparent (all pixels have alpha == 0).
-     * Some skins have an empty overlay layer filled with alpha-0 black pixels;
-     * drawing that would be harmless but we skip it for safety.
-     */
     private static boolean isFullyTransparent(BufferedImage img) {
         for (int y = 0; y < img.getHeight(); y++) {
             for (int x = 0; x < img.getWidth(); x++) {
                 int alpha = (img.getRGB(x, y) >> 24) & 0xFF;
-                if (alpha > 0) return false;
+                if (alpha > 0) {
+                    return false;
+                }
             }
         }
         return true;
     }
 
-    /**
-     * Resizes an image using NEAREST_NEIGHBOR interpolation to keep pixel-art
-     * sharp (no blurring).
-     */
     private static BufferedImage resize(BufferedImage img, int newW, int newH) {
         BufferedImage resized = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = resized.createGraphics();
@@ -301,11 +385,10 @@ public class AvatarUtils {
         return resized;
     }
 
-    /**
-     * Ensures the image is exactly the target size, resizing if needed.
-     */
     private static BufferedImage ensureSize(BufferedImage img, int w, int h) {
-        if (img.getWidth() == w && img.getHeight() == h) return img;
+        if (img.getWidth() == w && img.getHeight() == h) {
+            return img;
+        }
         return resize(img, w, h);
     }
 
@@ -353,37 +436,59 @@ public class AvatarUtils {
 
     private static String extractBase64Texture(String profileJson) {
         int props = profileJson.indexOf("\"properties\"");
-        if (props < 0) return null;
+        if (props < 0) {
+            return null;
+        }
         int valueIndex = profileJson.indexOf("\"value\"", props);
-        if (valueIndex < 0) return null;
+        if (valueIndex < 0) {
+            return null;
+        }
         int colon = profileJson.indexOf(':', valueIndex);
-        if (colon < 0) return null;
+        if (colon < 0) {
+            return null;
+        }
         int firstQuote = profileJson.indexOf('"', colon);
-        if (firstQuote < 0) return null;
+        if (firstQuote < 0) {
+            return null;
+        }
         int secondQuote = profileJson.indexOf('"', firstQuote + 1);
-        if (secondQuote < 0) return null;
+        if (secondQuote < 0) {
+            return null;
+        }
         String base64 = profileJson.substring(firstQuote + 1, secondQuote);
-        if (base64.isBlank()) return null;
+        if (base64.isBlank()) {
+            return null;
+        }
         return base64;
     }
 
     private static String extractSkinUrlFromTextureJson(String textureJson) {
         int skinIdx = textureJson.indexOf("\"SKIN\"");
-        if (skinIdx < 0) return null;
+        if (skinIdx < 0) {
+            return null;
+        }
         int urlIdx = textureJson.indexOf("\"url\"", skinIdx);
-        if (urlIdx < 0) return null;
+        if (urlIdx < 0) {
+            return null;
+        }
         int colon = textureJson.indexOf(':', urlIdx);
-        if (colon < 0) return null;
+        if (colon < 0) {
+            return null;
+        }
         int firstQuote = textureJson.indexOf('"', colon);
-        if (firstQuote < 0) return null;
+        if (firstQuote < 0) {
+            return null;
+        }
         int secondQuote = textureJson.indexOf('"', firstQuote + 1);
-        if (secondQuote < 0) return null;
+        if (secondQuote < 0) {
+            return null;
+        }
         return textureJson.substring(firstQuote + 1, secondQuote);
     }
 
-    private record CachedAvatar(List<Component> lines, long timestamp) {
+    private record CachedAvatar(List<Component> lines, long timestamp, long ttlMs) {
         boolean isExpired() {
-            return System.currentTimeMillis() - timestamp > CACHE_TTL_MS;
+            return System.currentTimeMillis() - timestamp > ttlMs;
         }
     }
 }

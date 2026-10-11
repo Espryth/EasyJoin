@@ -99,6 +99,16 @@ public enum DefaultFontInfo {
     SPACE(' ', 3),
     DEFAULT('a', 4);
 
+    private static final DefaultFontInfo[] ASCII_LOOKUP = new DefaultFontInfo[128];
+
+    static {
+        for (DefaultFontInfo info : values()) {
+            if (info != DEFAULT && info.character < ASCII_LOOKUP.length) {
+                ASCII_LOOKUP[info.character] = info;
+            }
+        }
+    }
+
     private final char character;
     private final int length;
 
@@ -121,8 +131,11 @@ public enum DefaultFontInfo {
     }
 
     public static DefaultFontInfo getDefaultFontInfo(char c) {
-        for (DefaultFontInfo dFI : DefaultFontInfo.values()) {
-            if (dFI.getCharacter() == c) return dFI;
+        if (c < ASCII_LOOKUP.length) {
+            DefaultFontInfo info = ASCII_LOOKUP[c];
+            if (info != null) {
+                return info;
+            }
         }
         return DefaultFontInfo.DEFAULT;
     }
