@@ -6,6 +6,7 @@ import me.espryth.easyjoin.action.ActionQueue;
 import me.espryth.easyjoin.format.Format;
 import me.espryth.easyjoin.service.FirstJoinService;
 import me.espryth.easyjoin.service.FormatService;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,14 +36,29 @@ public class PlayerListener implements Listener {
         event.joinMessage(null);
 
         firstJoinService.isFirstJoin(player).thenAccept(isFirst -> {
-            Optional<Format> formatOpt = formatService.getFormatForPlayer(player, isFirst);
-            if (formatOpt.isEmpty()) formatOpt = formatService.getDefaultFormat(isFirst);
+            Runnable handleJoin = () -> {
+                if (!player.isOnline()) {
+                    return;
+                }
+                Optional<Format> formatOpt = formatService.getFormatForPlayer(player, isFirst);
+                if (formatOpt.isEmpty()) {
+                    formatOpt = formatService.getDefaultFormat(isFirst);
+                }
 
-            formatOpt.ifPresent(format -> {
-                new ActionQueue(format.joinActions(), plugin).executeAll(player);
-            });
+                formatOpt.ifPresent(format ->
+                        new ActionQueue(format.joinActions(), plugin).executeAll(player)
+                );
 
-            if (isFirst) firstJoinService.markAsJoined(player);
+                if (isFirst) {
+                    firstJoinService.markAsJoined(player);
+                }
+            };
+
+            if (Bukkit.isOwnedByCurrentRegion(player)) {
+                handleJoin.run();
+            } else {
+                player.getScheduler().run(plugin, t -> handleJoin.run(), null);
+            }
         });
     }
 
@@ -52,10 +68,12 @@ public class PlayerListener implements Listener {
         event.quitMessage(null);
 
         Optional<Format> formatOpt = formatService.getFormatForPlayer(player, false);
-        if (formatOpt.isEmpty()) formatOpt = formatService.getDefaultFormat(false);
+        if (formatOpt.isEmpty()) {
+            formatOpt = formatService.getDefaultFormat(false);
+        }
 
-        formatOpt.ifPresent(format -> {
-            new ActionQueue(format.quitActions(), plugin).executeAll(player);
-        });
+        formatOpt.ifPresent(format ->
+                new ActionQueue(format.quitActions(), plugin).executeAll(player)
+        );
     }
 }

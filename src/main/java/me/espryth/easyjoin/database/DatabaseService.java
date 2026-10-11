@@ -20,9 +20,9 @@ public class DatabaseService {
 
     private final Container<AppConfig> appConfig;
     private final Container<CredentialsConfig> credentialsConfig;
-    private HikariDataSource dataSource;
-    private Jdbi jdbi;
-    private boolean enabled = false;
+    private volatile HikariDataSource dataSource;
+    private volatile Jdbi jdbi;
+    private volatile boolean enabled = false;
 
     @Inject
     public DatabaseService(Container<AppConfig> appConfig, Container<CredentialsConfig> credentialsConfig) {
@@ -32,7 +32,9 @@ public class DatabaseService {
 
     @OnEnable
     public void setup(Logger logger) {
-        if (!appConfig.get().firstJoinMode().equalsIgnoreCase("MYSQL")) {
+        shutdown(logger);
+        AppConfig cfg = appConfig.get();
+        if (cfg == null || !"MYSQL".equalsIgnoreCase(cfg.firstJoinMode())) {
             logger.info("Database mode is not MYSQL, skipping database initialization");
             return;
         }
@@ -42,8 +44,8 @@ public class DatabaseService {
 
             HikariConfig config = new HikariConfig();
             config.setJdbcUrl(String.format(
-                "jdbc:mysql://%s:%d/%s?useSSL=%s&allowPublicKeyRetrieval=true",
-                creds.host(), creds.port(), creds.database(), creds.useSsl()
+                    "jdbc:mysql://%s:%d/%s?useSSL=%s&allowPublicKeyRetrieval=true",
+                    creds.host(), creds.port(), creds.database(), creds.useSsl()
             ));
             config.setUsername(creds.username());
             config.setPassword(creds.password());
@@ -53,15 +55,15 @@ public class DatabaseService {
             config.setConnectionTimeout(10000);
             config.setPoolName("EasyJoin-Pool");
 
-            this.dataSource = new HikariDataSource(config);
-            this.jdbi = Jdbi.create(dataSource);
-            this.jdbi.installPlugin(new SqlObjectPlugin());
+            HikariDataSource ds = new HikariDataSource(config);
+            Jdbi jdbiInstance = Jdbi.create(ds);
+            jdbiInstance.installPlugin(new SqlObjectPlugin());
+            jdbiInstance.useExtension(FirstJoinDao.class, FirstJoinDao::createTable);
 
-            jdbi.useExtension(FirstJoinDao.class, FirstJoinDao::createTable);
-
+            this.dataSource = ds;
+            this.jdbi = jdbiInstance;
             this.enabled = true;
             logger.info("Database connection established successfully!");
-
         } catch (Exception e) {
             logger.error("Failed to initialize database connection", e);
             this.enabled = false;
@@ -70,17 +72,22 @@ public class DatabaseService {
 
     @OnDisable
     public void shutdown(Logger logger) {
-        if (dataSource != null && !dataSource.isClosed()) {
-            dataSource.close();
+        this.enabled = false;
+        HikariDataSource ds = this.dataSource;
+        this.dataSource = null;
+        this.jdbi = null;
+        if (ds != null && !ds.isClosed()) {
+            ds.close();
             logger.info("Database connection closed");
         }
     }
 
     public boolean isEnabled() {
-        return enabled && dataSource != null && !dataSource.isClosed();
+        HikariDataSource ds = this.dataSource;
+        return enabled && ds != null && !ds.isClosed();
     }
 
     public Optional<Jdbi> getJdbi() {
-        return isEnabled() ? Optional.of(jdbi) : Optional.empty();
+        return isEnabled() ? Optional.ofNullable(jdbi) : Optional.empty();
     }
 }

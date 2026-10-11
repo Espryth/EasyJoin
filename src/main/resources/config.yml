@@ -135,7 +135,7 @@ Formats:
     isFirstJoinFormat: false
     join:
       actions:
-        - '<DELAY> 5'
+        - '[DELAY] 5'
         - '[BROADCAST] &8(&a+&8) &f%player_name%'
         - '[AVATAR_MESSAGE] &aWelcome to the server!<nl>&7%player_name%<nl>&bEnjoy your stay!'
         - '[SOUND] ENTITY_PLAYER_LEVELUP;1;1'

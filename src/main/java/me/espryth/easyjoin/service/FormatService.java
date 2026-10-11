@@ -3,6 +3,7 @@ package me.espryth.easyjoin.service;
 import com.thewinterframework.configurate.Container;
 import com.thewinterframework.service.annotation.Service;
 import com.thewinterframework.service.annotation.lifecycle.OnEnable;
+import com.thewinterframework.service.annotation.lifecycle.OnReload;
 import jakarta.inject.Inject;
 import me.espryth.easyjoin.action.Action;
 import me.espryth.easyjoin.config.AppConfig;
@@ -10,15 +11,21 @@ import me.espryth.easyjoin.format.Format;
 import org.bukkit.entity.Player;
 import org.slf4j.Logger;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 public class FormatService {
 
     private final Container<AppConfig> config;
     private final ActionService actionService;
-    private final Map<String, Format> formats = new HashMap<>();
+    private final Map<String, Format> formats = new ConcurrentHashMap<>();
 
     @Inject
     public FormatService(Container<AppConfig> config, ActionService actionService) {
@@ -27,19 +34,20 @@ public class FormatService {
     }
 
     @OnEnable
+    @OnReload
     public void loadFormats(Logger logger) {
         formats.clear();
         AppConfig appConfig = config.get();
-        if (appConfig.formats() == null) {
+        if (appConfig == null || appConfig.formats() == null) {
             logger.error("No formats found in configuration!");
             return;
         }
 
         appConfig.formats().forEach((id, section) -> {
-            List<Action> join = parseActions(section.join());
-            List<Action> quit = parseActions(section.quit());
+            List<Action> join = parseActions(id, section.join(), logger);
+            List<Action> quit = parseActions(id, section.quit(), logger);
 
-            formats.put(id, new Format(
+            formats.put(id.toLowerCase(Locale.ROOT), new Format(
                     id,
                     section.priority(),
                     section.isFirstJoinFormat(),
@@ -53,13 +61,20 @@ public class FormatService {
         logger.info("Total formats loaded: {}", formats.size());
     }
 
-    private List<Action> parseActions(AppConfig.ActionSection section) {
-        if (section == null || section.actions() == null) return Collections.emptyList();
-        return section.actions().stream()
-                .map(actionService::parseAction)
-                .filter(Optional::isPresent)
-                .map(Optional::get)
-                .collect(Collectors.toList());
+    private List<Action> parseActions(String formatId, AppConfig.ActionSection section, Logger logger) {
+        if (section == null || section.actions() == null) {
+            return Collections.emptyList();
+        }
+        List<Action> parsed = new ArrayList<>();
+        for (String line : section.actions()) {
+            Optional<Action> actionOpt = actionService.parseAction(line);
+            if (actionOpt.isPresent()) {
+                parsed.add(actionOpt.get());
+            } else if (line != null && !line.isBlank()) {
+                logger.warn("Unknown action '{}' in format '{}'", line, formatId);
+            }
+        }
+        return List.copyOf(parsed);
     }
 
     public Optional<Format> getFormatForPlayer(Player player, boolean isFirstJoin) {
@@ -77,10 +92,15 @@ public class FormatService {
     }
 
     public Optional<Format> getFormatById(String id) {
-        return Optional.ofNullable(formats.get(id));
+        if (id == null) {
+            return Optional.empty();
+        }
+        return Optional.ofNullable(formats.get(id.toLowerCase(Locale.ROOT)));
     }
 
     public List<String> getFormatIds() {
-        return new ArrayList<>(formats.keySet());
+        return formats.values().stream()
+                .map(Format::id)
+                .toList();
     }
 }
