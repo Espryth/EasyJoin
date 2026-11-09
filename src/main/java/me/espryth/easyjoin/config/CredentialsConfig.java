@@ -5,7 +5,7 @@ import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 import org.spongepowered.configurate.objectmapping.meta.Setting;
 
 @ConfigSerializable
-@Configurate("credentials")
+@Configurate(value = "credentials", fillMissing = true)
 public record CredentialsConfig(
         String host,
         int port,

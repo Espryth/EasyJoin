@@ -1,7 +1,7 @@
 package me.espryth.easyjoin.database;
 
+import com.thewinterframework.component.annotation.Component;
 import com.thewinterframework.configurate.Container;
-import com.thewinterframework.service.annotation.Service;
 import com.thewinterframework.service.annotation.lifecycle.OnDisable;
 import com.thewinterframework.service.annotation.lifecycle.OnEnable;
 import com.zaxxer.hikari.HikariConfig;
@@ -15,7 +15,7 @@ import org.slf4j.Logger;
 
 import java.util.Optional;
 
-@Service
+@Component
 public class DatabaseService {
 
     private final Container<AppConfig> appConfig;

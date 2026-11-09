@@ -1,6 +1,5 @@
 package me.espryth.easyjoin.service;
 
-import com.thewinterframework.service.annotation.Service;
 import jakarta.inject.Inject;
 import me.espryth.easyjoin.action.Action;
 import me.espryth.easyjoin.action.ActionQueue;
@@ -36,7 +35,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-@Service
+@com.thewinterframework.component.annotation.Component
 public class ActionService {
 
     private static final Map<String, Key> BUKKIT_SOUND_KEYS = buildBukkitSoundKeyMap();
@@ -94,13 +93,19 @@ public class ActionService {
 
         registerAction("[BROADCAST_ACTIONBAR]", data -> (player, queue) -> {
             Component msg = MessageUtils.colorizeToComponent(MessageUtils.parsePlaceholders(player, data));
-            Bukkit.getOnlinePlayers().forEach(p -> p.sendActionBar(msg));
+            for (Player p : Bukkit.getOnlinePlayers()) {
+                p.sendActionBar(msg);
+            }
         });
 
         registerAction("[TITLE]", data -> (player, queue) -> showTitle(player, data, player::showTitle));
 
         registerAction("[BROADCAST_TITLE]", data -> (player, queue) -> showTitle(player, data,
-                title -> Bukkit.getOnlinePlayers().forEach(p -> p.showTitle(title))));
+                title -> {
+                    for (Player p : Bukkit.getOnlinePlayers()) {
+                        p.showTitle(title);
+                    }
+                }));
 
         registerAction("[AVATAR_MESSAGE]",
                 data -> (player, queue) -> sendAvatarMessage(player, queue, data, player::sendMessage));

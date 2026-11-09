@@ -1,7 +1,7 @@
 package me.espryth.easyjoin.service;
 
+import com.thewinterframework.component.annotation.Component;
 import com.thewinterframework.configurate.Container;
-import com.thewinterframework.service.annotation.Service;
 import jakarta.inject.Inject;
 import me.espryth.easyjoin.config.AppConfig;
 import me.espryth.easyjoin.database.DatabaseService;
@@ -14,7 +14,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Component
 public class FirstJoinService {
 
     private final Container<AppConfig> appConfig;

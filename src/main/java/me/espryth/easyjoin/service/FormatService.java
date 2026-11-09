@@ -1,7 +1,7 @@
 package me.espryth.easyjoin.service;
 
+import com.thewinterframework.component.annotation.Component;
 import com.thewinterframework.configurate.Container;
-import com.thewinterframework.service.annotation.Service;
 import com.thewinterframework.service.annotation.lifecycle.OnEnable;
 import com.thewinterframework.service.annotation.lifecycle.OnReload;
 import jakarta.inject.Inject;
@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
+@Component
 public class FormatService {
 
     private final Container<AppConfig> config;

@@ -7,7 +7,7 @@ import org.spongepowered.configurate.objectmapping.meta.Setting;
 import java.util.Map;
 
 @ConfigSerializable
-@Configurate("config")
+@Configurate(value = "config", fillMissing = true)
 public record AppConfig(
         @Setting("FirstJoinMode") String firstJoinMode,
         @Setting("Formats") Map<String, FormatSection> formats

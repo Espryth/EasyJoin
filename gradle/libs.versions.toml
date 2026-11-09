@@ -1,7 +1,12 @@
 [versions]
 # Core & Platform
-mapacheeelib = "1.0.2"
+mapacheeelib = "1.1.1-SNAPSHOT"
 paper-api = "1.21.11-R0.1-SNAPSHOT"
+
+# Winter Framework
+winter-paper = "3.0.0"
+winter-configuration = "3.0.1-SNAPSHOT"
+winter-command = "2.0.0"
 
 # Hooks
 placeholderapi = "2.12.2"
@@ -18,6 +23,11 @@ shadow = "9.3.0"
 # Core & Platform
 mapacheeelib = { module = "me.mapacheee:MapacheeeLib", version.ref = "mapacheeelib" }
 paper-api = { module = "io.papermc.paper:paper-api", version.ref = "paper-api" }
+
+# Winter Framework
+winter-paper = { module = "com.thewinterframework:paper", version.ref = "winter-paper" }
+winter-configuration = { module = "com.thewinterframework:configuration", version.ref = "winter-configuration" }
+winter-command = { module = "com.thewinterframework:command", version.ref = "winter-command" }
 
 # Hooks
 placeholderapi = { module = "me.clip:placeholderapi", version.ref = "placeholderapi" }

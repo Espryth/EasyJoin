@@ -17,6 +17,10 @@ java {
 repositories {
     mavenCentral()
     mavenLocal()
+    maven("https://central.sonatype.com/repository/maven-snapshots/") {
+        mavenContent { snapshotsOnly() }
+        content { includeGroup("com.thewinterframework") }
+    }
     maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://oss.sonatype.org/content/repositories/snapshots/")
     maven("https://repo.extendedclip.com/releases/")
@@ -29,7 +33,10 @@ dependencies {
     // Paper & Core
     compileOnly(libs.paper.api)
     compileOnlyApi(libs.mapacheeelib)
-    annotationProcessor(libs.mapacheeelib)
+    compileOnly(libs.winter.configuration)
+    annotationProcessor(libs.winter.paper)
+    annotationProcessor(libs.winter.command)
+    annotationProcessor(libs.winter.configuration)
 
     // Hooks
     compileOnly(libs.placeholderapi)
@@ -52,6 +59,7 @@ tasks {
         archiveClassifier.set("plain")
     }
     processResources {
+        exclude("winter.properties")
         filteringCharset = "UTF-8"
         filesMatching(listOf("plugin.yml", "paper-plugin.yml")) {
             expand(
