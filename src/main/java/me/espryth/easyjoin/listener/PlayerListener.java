@@ -1,6 +1,7 @@
 package me.espryth.easyjoin.listener;
 
 import com.thewinterframework.component.annotation.Component;
+import com.thewinterframework.component.annotation.SyncLoading;
 import jakarta.inject.Inject;
 import me.espryth.easyjoin.action.ActionQueue;
 import me.espryth.easyjoin.format.Format;
@@ -17,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 import java.util.Optional;
 
 @Component
+@SyncLoading
 public class PlayerListener implements Listener {
 
     private final Plugin plugin;
@@ -32,6 +34,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
+        if (event.joinMessage() == null) {
+            return;
+        }
         Player player = event.getPlayer();
         event.joinMessage(null);
 
@@ -42,7 +47,7 @@ public class PlayerListener implements Listener {
                 }
                 Optional<Format> formatOpt = formatService.getFormatForPlayer(player, isFirst);
                 if (formatOpt.isEmpty()) {
-                    formatOpt = formatService.getDefaultFormat(isFirst);
+                    formatOpt = formatService.getDefaultFormat(false);
                 }
 
                 formatOpt.ifPresent(format ->
@@ -64,6 +69,9 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onQuit(PlayerQuitEvent event) {
+        if (event.quitMessage() == null) {
+            return;
+        }
         Player player = event.getPlayer();
         event.quitMessage(null);
 
